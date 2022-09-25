@@ -1,24 +1,22 @@
-package com.example.timetable_compose_9901.ui.component
+package com.example.timetable_compose_9901.view.component
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTransformGestures
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.painterResource
+import com.example.timetable_compose_9901.viewModel.DayOfWeekItem
 import com.example.timetable_compose_9901.viewModel.TimetableViewModel
 
 @Composable
 fun PinchImage(
-    currentDay: State<TimetableViewModel.DayOfWeekItem?>,
+    currentDay: State<DayOfWeekItem?>,
     timetableViewModel: TimetableViewModel
 ) {
     val zoom = timetableViewModel.zoomImage.observeAsState(1f)
