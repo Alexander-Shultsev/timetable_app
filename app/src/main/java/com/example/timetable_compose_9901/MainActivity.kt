@@ -11,9 +11,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.example.timetable_compose_9901.view.navigation.NavHostMain
-import com.example.timetable_compose_9901.view.screen.downloadStartScreenIsSuccess
 import com.example.timetable_compose_9901.view.theme.TimetableTheme
 
+var downloadStartScreenIsSuccess: Boolean = false
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

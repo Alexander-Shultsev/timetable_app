@@ -1,4 +1,4 @@
-package com.example.timetable_compose_9901.view.screen
+package com.example.timetable_compose_9901.view.screen.Timetable
 
 import androidx.compose.foundation.gestures.*
 import androidx.compose.foundation.layout.*
@@ -10,6 +10,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.timetable_compose_9901.downloadStartScreenIsSuccess
 import com.example.timetable_compose_9901.view.component.PinchImage
 import com.example.timetable_compose_9901.view.component.TimetableButton
 import com.example.timetable_compose_9901.view.component.Title1
@@ -20,7 +21,6 @@ import com.example.timetable_compose_9901.viewModel.topDownWeekArray
 import java.text.SimpleDateFormat
 import java.util.*
 
-var downloadStartScreenIsSuccess: Boolean = false
 
 @Composable
 fun TimetableScreen(

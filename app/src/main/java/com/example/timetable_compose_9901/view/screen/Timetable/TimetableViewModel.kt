@@ -15,6 +15,7 @@ import com.example.timetable_compose_9901.view.theme.*
 import java.text.SimpleDateFormat
 import java.util.*
 
+
 /* Тип дня недели */
 data class DayOfWeekItem (
     val name: String,
@@ -75,7 +76,12 @@ class TimetableViewModel: ViewModel() {
 
     fun getImage(imageUri: Uri): Bitmap? {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            ImageDecoder.decodeBitmap(ImageDecoder.createSource(App.applicationContext().contentResolver, imageUri))
+            ImageDecoder.decodeBitmap(
+                ImageDecoder.createSource(
+                    App.applicationContext().contentResolver,
+                    imageUri
+                )
+            )
         } else {
             MediaStore.Images.Media.getBitmap(App.applicationContext().contentResolver, imageUri)
         }
