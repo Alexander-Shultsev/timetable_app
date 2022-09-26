@@ -24,14 +24,7 @@ class MainActivity : ComponentActivity() {
         goToMainScreen()
 
         setContent {
-            TimetableTheme {
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = Color.Black
-                ) {
-                    NavHostMain()
-                }
-            }
+            NavHostMain()
         }
     }
 

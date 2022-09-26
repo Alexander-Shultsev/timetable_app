@@ -11,12 +11,13 @@ import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.painterResource
-import com.example.timetable_compose_9901.viewModel.DayOfWeekItem
+import com.example.timetable_compose_9901.data.ImageItem
 import com.example.timetable_compose_9901.viewModel.TimetableViewModel
+import com.example.timetable_compose_9901.viewModel.WeekButtonItem
 
 @Composable
 fun PinchImage(
-    currentDay: State<DayOfWeekItem?>,
+    currentDay: State<ImageItem?>,
     timetableViewModel: TimetableViewModel
 ) {
     val zoom = timetableViewModel.zoomImage.observeAsState(1f)

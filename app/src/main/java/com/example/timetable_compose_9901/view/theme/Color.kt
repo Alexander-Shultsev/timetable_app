@@ -8,6 +8,8 @@ val ButtonWednesday = Color(0xFF00ACC1)
 val ButtonThursday = Color(0xFF00897B)
 val ButtonFriday = Color(0xFF43A047)
 
+val ColorMain = ButtonMonday
+
 val ButtonMondayLight = Color(0x4D3949AB)
 val ButtonTuesdayLight = Color(0x4D1E88E5)
 val ButtonWednesdayLight = Color(0x4D00ACC1)
