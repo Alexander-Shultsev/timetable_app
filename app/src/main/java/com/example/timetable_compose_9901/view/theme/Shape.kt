@@ -7,7 +7,7 @@ import androidx.compose.ui.unit.dp
 val Shapes = Shapes(
     small = RoundedCornerShape(0.dp),
     medium = RoundedCornerShape(4.dp),
-    large = RoundedCornerShape(8.dp)
+    large = RoundedCornerShape(10.dp)
 )
 
 val heightBottomButton = 180.dp

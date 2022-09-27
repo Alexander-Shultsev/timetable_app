@@ -1,6 +1,7 @@
 package com.example.timetable_compose_9901
 
 import android.os.Bundle
+import android.text.format.Time
 import android.view.View
 import android.view.ViewTreeObserver
 import androidx.activity.ComponentActivity
@@ -10,10 +11,13 @@ import androidx.compose.material.Surface
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.timetable_compose_9901.view.navigation.NavHostMain
 import com.example.timetable_compose_9901.view.theme.TimetableTheme
+import com.example.timetable_compose_9901.viewModel.TimetableViewModel
 
 var downloadStartScreenIsSuccess: Boolean = false
+lateinit var timetableViewModel: TimetableViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -24,6 +28,7 @@ class MainActivity : ComponentActivity() {
         goToMainScreen()
 
         setContent {
+            timetableViewModel = viewModel()
             NavHostMain()
         }
     }

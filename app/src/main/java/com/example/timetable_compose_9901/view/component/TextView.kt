@@ -6,6 +6,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.timetable_compose_9901.view.theme.jost
 
@@ -22,6 +23,22 @@ fun Title1(
             fontSize = 30.sp,
             color = Color.White),
         modifier = modifier)
+}
+
+@Composable
+fun Title2(
+    text: String,
+    modifier: Modifier = Modifier
+) {
+    Text(
+        text = text,
+        style = TextStyle(
+            fontFamily = jost,
+            fontWeight = FontWeight.SemiBold,
+            fontSize = 20.sp,
+            color = Color.White),
+        modifier = modifier,
+        letterSpacing = 2.sp)
 }
 
 @Composable

@@ -1,17 +1,10 @@
 package com.example.timetable_compose_9901.viewModel
 
-import android.graphics.Bitmap
-import android.graphics.ImageDecoder
-import android.net.Uri
-import android.os.Build
-import android.provider.MediaStore
 import androidx.compose.ui.geometry.Offset
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.timetable_compose_9901.R
 import com.example.timetable_compose_9901.data.*
-import com.example.timetable_compose_9901.main.App
 import com.example.timetable_compose_9901.view.theme.*
 import java.text.SimpleDateFormat
 import java.util.*
@@ -45,17 +38,33 @@ class TimetableViewModel: ViewModel() {
     private val _zoomImage: MutableLiveData<Float> = MutableLiveData(1f)
     private val _offsetImage: MutableLiveData<Offset> = MutableLiveData(Offset.Zero)
     private val _currentWeekButton: MutableLiveData<WeekButtonItem> = MutableLiveData(weekButtons[0])
-    private val _currentImage: MutableLiveData<ImageItem> = MutableLiveData(g9901[0])
+    private val _currentGroupString: MutableLiveData<String> = MutableLiveData("")
+    private val _currentImage: MutableLiveData<GroupItem> = MutableLiveData(g9901[0])
+    private val _currentGroup: MutableLiveData<Array<GroupItem>> = MutableLiveData(g9901)
 
     val topDownWeek: LiveData<String> = _topDownWeek
     val zoomImage: LiveData<Float> = _zoomImage
     val offsetImage: LiveData<Offset> = _offsetImage
     val currentWeekButton: LiveData<WeekButtonItem> = _currentWeekButton
-    val currentImage: LiveData<ImageItem> = _currentImage
+    val currentImage: LiveData<GroupItem> = _currentImage
+    val currentGroupString: LiveData<String> = _currentGroupString
+    val currentGroup: LiveData<Array<GroupItem>> = _currentGroup
+
+    var currentCourse: Array<String> = arrayOf()
 
     init {
         setCurrentDay()
         setCurrentWeek()
+    }
+
+    fun setCourse(course: String) {
+        _currentGroupString.value = course
+        getCurrentCourse(_currentGroupString.value!!)
+    }
+
+    fun setGroup(group: String) {
+        _currentGroupString.value += group
+        getCurrentGroup(_currentGroupString.value!!)
     }
 
     /* Изменить размер картинки */
@@ -74,11 +83,21 @@ class TimetableViewModel: ViewModel() {
         _offsetImage.value = Offset.Zero
     }
 
-    fun getCurrentGroup(group: String): Array<ImageItem> {
-        return when(group) {
+    private fun getCurrentGroup(group: String) {
+        _currentGroup.value = when(group)  {
             "1 course/9901" -> g9901
             "1 course/9902" -> g9902
             "1 course/9903" -> g9903
+            else -> arrayOf()
+        }
+    }
+
+    private fun getCurrentCourse(course: String) {
+        currentCourse = when(course) {
+            "1 course/" -> GroupArray.course1
+            "2 course/" -> GroupArray.course2
+            "3 course/" -> GroupArray.course3
+            "4 course/" -> GroupArray.course4
             else -> arrayOf()
         }
     }
@@ -108,21 +127,21 @@ class TimetableViewModel: ViewModel() {
     fun setCurrentDay() {
         val numberDayOfWeek = getCurrentDate()
 
-        if (numberDayOfWeek in 0..4) {
+        if (numberDayOfWeek in 0 until 5) {
             _currentWeekButton.value = weekButtons[numberDayOfWeek]
-            _currentImage.value = g9901[numberDayOfWeek]
+            _currentImage.value = currentGroup.value!![numberDayOfWeek]
         } else {
             _currentWeekButton.value = weekButtons[0]
-            _currentImage.value = g9901[0]
+            _currentImage.value = currentGroup.value!![0]
         }
     }
 
     /* Изменить текущий день недели при действии пользователя */
     fun changeCurrentDay(dayOfWeek: String) {
-        for (item in g9901.indices) {
-            if (g9901[item].name == dayOfWeek) {
+        for (item in currentGroup.value!!.indices) {
+            if (currentGroup.value!![item].name == dayOfWeek) {
                 _currentWeekButton.value = weekButtons[item]
-                _currentImage.value = g9901[item]
+                _currentImage.value = currentGroup.value!![item]
             }
         }
     }

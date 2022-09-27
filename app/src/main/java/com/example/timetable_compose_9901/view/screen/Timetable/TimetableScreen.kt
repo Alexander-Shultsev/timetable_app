@@ -14,6 +14,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.timetable_compose_9901.data.g9901
 import com.example.timetable_compose_9901.downloadStartScreenIsSuccess
+import com.example.timetable_compose_9901.timetableViewModel
 import com.example.timetable_compose_9901.view.component.PinchImage
 import com.example.timetable_compose_9901.view.component.TimetableButton
 import com.example.timetable_compose_9901.view.component.Title1
@@ -27,12 +28,12 @@ import java.util.*
 @Composable
 fun TimetableScreen(
     navController: NavController,
-    viewModel: TimetableViewModel = viewModel()
 ) {
-    val topDownWeek = viewModel.topDownWeek.observeAsState()
-    val currentGroup = viewModel.getCurrentGroup("1 course/9901")
-    val currentWeekButton = viewModel.currentWeekButton.observeAsState()
-    val currentImage = viewModel.currentImage.observeAsState(g9901[0])
+    timetableViewModel.setCurrentDay()
+
+    val topDownWeek = timetableViewModel.topDownWeek.observeAsState()
+    val currentImage = timetableViewModel.currentImage.observeAsState()
+    val currentWeekButton = timetableViewModel.currentWeekButton.observeAsState()
     val numberWeekOfYear = SimpleDateFormat("w").format(Date()).toInt() % 2
 
     if (topDownWeekArray[numberWeekOfYear] == topDownWeek.value)
@@ -58,13 +59,13 @@ fun TimetableScreen(
                     .pointerInput(Unit) {
                         detectTapGestures(
                             onDoubleTap = {
-                                viewModel.imageToStartScreen()
+                                timetableViewModel.imageToStartScreen()
                             }
                         )
                     },
                 content = { // Картинка
-                    PinchImage(currentImage, viewModel)
-                    viewModel.imageToStartScreen()
+                    PinchImage(currentImage, timetableViewModel)
+                    timetableViewModel.imageToStartScreen()
                 }
             )
 
@@ -76,8 +77,8 @@ fun TimetableScreen(
                 weekButtons.forEach { item ->
                     TimetableButton(
                         dayOfWeek = item,
-                        isActive = item.name == currentImage.value.name,
-                        timetableViewModel = viewModel,
+                        isActive = item.name == currentWeekButton.value!!.name,
+                        timetableViewModel = timetableViewModel,
                         modifier = Modifier.weight(1f)
                     )
                 }
