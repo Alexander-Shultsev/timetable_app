@@ -1,15 +1,13 @@
-package com.example.timetable_compose_9901.ui.component
+package com.example.timetable_compose_9901.view.component
 
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.android.style.LetterSpacingSpanEm
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.timetable_compose_9901.ui.theme.jost
+import com.example.timetable_compose_9901.view.theme.jost
 
 @Composable
 fun Title1(
