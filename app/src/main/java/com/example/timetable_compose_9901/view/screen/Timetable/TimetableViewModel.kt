@@ -105,6 +105,7 @@ class TimetableViewModel: ViewModel() {
             "1 course/2992" -> g2992
             "1 course/2993" -> g2993
             "1 course/2994" -> g2994
+            "1 course/2995" -> g2995
             "1 course/2996" -> g2996
 
 
@@ -124,7 +125,7 @@ class TimetableViewModel: ViewModel() {
             "3 course/0901" -> g0901
             "3 course/0902" -> g0902
             "3 course/0911" -> g0911
-            "3 course/0931" -> g0911 // заменить на g0931
+            "3 course/0931" -> g0931
             "3 course/0932" -> g0932
             "3 course/0941" -> g0941
             "3 course/0951" -> g0951
