@@ -9,9 +9,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.timetable_compose_9901.data.g9901
 import com.example.timetable_compose_9901.downloadStartScreenIsSuccess
 import com.example.timetable_compose_9901.timetableViewModel
@@ -52,22 +54,23 @@ fun TimetableScreen(
                     .padding(top = 40.dp)
             )
 
-            Box( // Контейнер для изображения
-                contentAlignment = Alignment.Center,
-                modifier = Modifier
-                    .weight(1f)
-                    .pointerInput(Unit) {
-                        detectTapGestures(
-                            onDoubleTap = {
-                                timetableViewModel.imageToStartScreen()
-                            }
-                        )
-                    },
-                content = { // Картинка
-                    PinchImage(currentImage, timetableViewModel)
+//            Box( // Контейнер для изображения
+//                contentAlignment = Alignment.Center,
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .weight(1f)
+//                    .pointerInput(Unit) {
+//                        detectTapGestures(
+//                            onDoubleTap = {
+//                                timetableViewModel.imageToStartScreen()
+//                            }
+//                        )
+//                    },
+//                content = { // Картинка
+                    PinchImage(currentImage, timetableViewModel, modifier = Modifier.fillMaxWidth().weight(1f))
                     timetableViewModel.imageToStartScreen()
-                }
-            )
+//                }
+//            )
 
             Row( // Кнопки навигации
                 modifier = Modifier
@@ -85,4 +88,10 @@ fun TimetableScreen(
             }
         }
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun TimetableScreenP() {
+    TimetableScreen(rememberNavController())
 }

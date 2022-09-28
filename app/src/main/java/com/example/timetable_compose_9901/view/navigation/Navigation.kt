@@ -53,7 +53,7 @@ fun navigate(
 ) {
     navController.navigate(screen) {
         launchSingleTop = true
-        popUpTo(navController.graph.findStartDestination().id) {
+        popUpTo(navController.graph.startDestinationId) {
             saveState = true
         }
         restoreState = true

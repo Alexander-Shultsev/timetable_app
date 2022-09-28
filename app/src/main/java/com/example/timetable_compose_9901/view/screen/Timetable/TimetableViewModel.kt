@@ -29,7 +29,8 @@ val weekButtons = arrayOf(
     WeekButtonItem("ВТ", ButtonTuesday, ButtonTuesdayLight),
     WeekButtonItem("СР", ButtonWednesday, ButtonWednesdayLight),
     WeekButtonItem("ЧТ", ButtonThursday, ButtonThursdayLight),
-    WeekButtonItem("ПТ", ButtonFriday, ButtonFridayLight)
+    WeekButtonItem("ПТ", ButtonFriday, ButtonFridayLight),
+    WeekButtonItem("СБ", ButtonSaturday, ButtonSaturdayLight),
 )
 
 class TimetableViewModel: ViewModel() {
@@ -85,9 +86,59 @@ class TimetableViewModel: ViewModel() {
 
     private fun getCurrentGroup(group: String) {
         _currentGroup.value = when(group)  {
-            "1 course/9901" -> g9901
-            "1 course/9902" -> g9902
-            "1 course/9903" -> g9903
+
+
+            "1 course/2781" -> g2781
+            "1 course/2791" -> g2791
+            "1 course/2792" -> g2792
+            "1 course/2911" -> g2911
+            "1 course/2912" -> g2912
+            "1 course/2913" -> g2913
+            "1 course/2921" -> g2921
+            "1 course/2951" -> g2951
+            "1 course/2952" -> g2952
+            "1 course/2953" -> g2953
+            "1 course/2981" -> g2981
+            "1 course/2982" -> g2982
+            "1 course/2983" -> g2983
+            "1 course/2991" -> g2991
+            "1 course/2992" -> g2992
+            "1 course/2993" -> g2993
+            "1 course/2994" -> g2994
+            "1 course/2996" -> g2996
+
+
+            "2 course/1791" -> g1791
+            "2 course/1792" -> g1792
+            "2 course/1911" -> g1911
+            "2 course/1912" -> g1912
+            "2 course/1921" -> g1921
+            "2 course/1951" -> g1951
+            "2 course/1952" -> g1952
+            "2 course/1981" -> g1981
+            "2 course/1991" -> g1991
+            "2 course/1992" -> g1992
+            "2 course/1994" -> g1994
+
+
+            "3 course/0901" -> g0901
+            "3 course/0902" -> g0902
+            "3 course/0911" -> g0911
+            "3 course/0931" -> g0911 // заменить на g0931
+            "3 course/0932" -> g0932
+            "3 course/0941" -> g0941
+            "3 course/0951" -> g0951
+            "3 course/0952" -> g0952
+
+
+            "4 course/9901" -> g9901
+            "4 course/9903" -> g9903
+            "4 course/9911" -> g9911
+            "4 course/9921" -> g9921
+            "4 course/9931" -> g9931
+            "4 course/9941" -> g9941
+            "4 course/9951" -> g9951
+            "4 course/9961" -> g9961
             else -> arrayOf()
         }
     }
