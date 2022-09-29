@@ -27,6 +27,7 @@ val g2781 = arrayOf(
     GroupItem("СР", R.drawable.c1_2781_wednasday),
     GroupItem("ЧТ", R.drawable.c1_2781_thusday),
     GroupItem("ПТ", R.drawable.c1_2781_friday),
+    GroupItem("ПТ", R.drawable.c1_2781_sutuday),
     GroupItem("СБ", R.drawable.img_rest)
 )
 val g2791 = arrayOf(
@@ -59,7 +60,7 @@ val g2912 = arrayOf(
     GroupItem("СР", R.drawable.c1_2912_wednesday),
     GroupItem("ЧТ", R.drawable.c1_2912_thursday),
     GroupItem("ПТ", R.drawable.c1_2912_friday),
-    GroupItem("СБ", R.drawable.c1_2912_suturday)
+    GroupItem("СБ", R.drawable.img_rest)
 )
 val g2913 = arrayOf(
     GroupItem("ПН", R.drawable.c1_2913_monday),
@@ -130,6 +131,7 @@ val g2991 = arrayOf(
     GroupItem("ВТ", R.drawable.c1_2991_tuesday),
     GroupItem("СР", R.drawable.c1_2991_wednesday),
     GroupItem("ЧТ", R.drawable.c1_2991_thursday),
+    GroupItem("ПТ", R.drawable.c1_2991_friday),
     GroupItem("ПТ", R.drawable.c1_2991_friday),
     GroupItem("СБ", R.drawable.img_rest),
 )
@@ -339,7 +341,7 @@ val g0952 = arrayOf(
 /* 4 курс */
 val g9901 = arrayOf(
     GroupItem("ПН", R.drawable.c4_9901_monday),
-    GroupItem("ВТ", R.drawable.c4_9901_thursday),
+    GroupItem("ВТ", R.drawable.c4_9901_tuesday),
     GroupItem("СР", R.drawable.c4_9901_wednesday),
     GroupItem("ЧТ", R.drawable.c4_9901_thursday),
     GroupItem("ПТ", R.drawable.c4_9901_friday),
@@ -347,7 +349,7 @@ val g9901 = arrayOf(
 )
 val g9903 = arrayOf(
     GroupItem("ПН", R.drawable.c4_9903_monday),
-    GroupItem("ВТ", R.drawable.c4_9903_thursday),
+    GroupItem("ВТ", R.drawable.c4_9903_tuesday),
     GroupItem("СР", R.drawable.c4_9903_wednesday),
     GroupItem("ЧТ", R.drawable.c4_9903_thursday),
     GroupItem("ПТ", R.drawable.c4_9903_friday),
@@ -355,7 +357,7 @@ val g9903 = arrayOf(
 )
 val g9911 = arrayOf(
     GroupItem("ПН", R.drawable.c4_9911_monday),
-    GroupItem("ВТ", R.drawable.c4_9911_thursday),
+    GroupItem("ВТ", R.drawable.c4_9911_tuesday),
     GroupItem("СР", R.drawable.c4_9911_wednesday),
     GroupItem("ЧТ", R.drawable.c4_9911_thursday),
     GroupItem("ПТ", R.drawable.c4_9911_friday),
@@ -363,7 +365,7 @@ val g9911 = arrayOf(
 )
 val g9921 = arrayOf(
     GroupItem("ПН", R.drawable.c4_9921_monday),
-    GroupItem("ВТ", R.drawable.c4_9921_thursday),
+    GroupItem("ВТ", R.drawable.c4_9921_tuesday),
     GroupItem("СР", R.drawable.c4_9921_wednesday),
     GroupItem("ЧТ", R.drawable.c4_9921_thursday),
     GroupItem("ПТ", R.drawable.c4_9921_friday),
@@ -371,7 +373,7 @@ val g9921 = arrayOf(
 )
 val g9931 = arrayOf(
     GroupItem("ПН", R.drawable.c4_9931_monday),
-    GroupItem("ВТ", R.drawable.c4_9931_thursday),
+    GroupItem("ВТ", R.drawable.c4_9931_tuesday),
     GroupItem("СР", R.drawable.c4_9931_wednesday),
     GroupItem("ЧТ", R.drawable.c4_9931_thursday),
     GroupItem("ПТ", R.drawable.c4_9931_friday),
@@ -379,7 +381,7 @@ val g9931 = arrayOf(
 )
 val g9941 = arrayOf(
     GroupItem("ПН", R.drawable.c4_9941_monday),
-    GroupItem("ВТ", R.drawable.c4_9941_thursday),
+    GroupItem("ВТ", R.drawable.c4_9941_tuesday),
     GroupItem("СР", R.drawable.c4_9941_wednesday),
     GroupItem("ЧТ", R.drawable.c4_9941_thursday),
     GroupItem("ПТ", R.drawable.c4_9941_friday),
@@ -387,7 +389,7 @@ val g9941 = arrayOf(
 )
 val g9951 = arrayOf(
     GroupItem("ПН", R.drawable.c4_9951_monday),
-    GroupItem("ВТ", R.drawable.c4_9951_thursday),
+    GroupItem("ВТ", R.drawable.c4_9951_tuesday),
     GroupItem("СР", R.drawable.c4_9951_wednesday),
     GroupItem("ЧТ", R.drawable.c4_9951_thursday),
     GroupItem("ПТ", R.drawable.c4_9951_friday),
@@ -395,7 +397,7 @@ val g9951 = arrayOf(
 )
 val g9961 = arrayOf(
     GroupItem("ПН", R.drawable.c4_9961_monday),
-    GroupItem("ВТ", R.drawable.c4_9961_thursday),
+    GroupItem("ВТ", R.drawable.c4_9961_tuesday),
     GroupItem("СР", R.drawable.c4_9961_wednesday),
     GroupItem("ЧТ", R.drawable.c4_9961_thursday),
     GroupItem("ПТ", R.drawable.c4_9961_friday),
