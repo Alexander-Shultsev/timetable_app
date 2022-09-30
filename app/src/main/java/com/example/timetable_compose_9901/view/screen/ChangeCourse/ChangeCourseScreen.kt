@@ -39,7 +39,7 @@ fun ChangeCourseScreen(
         ) {
             Title1(
                 text = "Выберите курс",
-                modifier = Modifier.padding(bottom = paddingMain)
+                modifier = Modifier.padding(bottom = 30.dp)
             )
 
             Column(modifier = Modifier
@@ -54,8 +54,8 @@ fun ChangeCourseScreen(
                             .weight(1f)
                             .fillMaxHeight()
                             .clickable {
-                                navigate(navController, NavItemMain.ChangeGroup.route)
                                 timetableViewModel.setCourse("1 course/")
+                                navigate(navController, NavItemMain.ChangeGroup.route)
                             },
                         shape = Shapes.large
                     ) {
@@ -71,8 +71,8 @@ fun ChangeCourseScreen(
                             .weight(1f)
                             .fillMaxHeight()
                             .clickable {
-                                navigate(navController, NavItemMain.ChangeGroup.route)
                                 timetableViewModel.setCourse("2 course/")
+                                navigate(navController, NavItemMain.ChangeGroup.route)
                             },
                         shape = Shapes.large
                     ) {
@@ -92,8 +92,8 @@ fun ChangeCourseScreen(
                             .weight(1f)
                             .fillMaxHeight()
                             .clickable {
-                                navigate(navController, NavItemMain.ChangeGroup.route)
                                 timetableViewModel.setCourse("3 course/")
+                                navigate(navController, NavItemMain.ChangeGroup.route)
                             },
                         shape = Shapes.large
                     ) {

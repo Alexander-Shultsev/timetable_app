@@ -13,7 +13,8 @@ import com.example.timetable_compose_9901.view.theme.jost
 @Composable
 fun Title1(
     text: String,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    color: Color = Color.White
 ) {
     Text(
         text = text,
@@ -21,14 +22,15 @@ fun Title1(
             fontFamily = jost,
             fontWeight = FontWeight.Bold,
             fontSize = 30.sp,
-            color = Color.White),
+            color = color),
         modifier = modifier)
 }
 
 @Composable
 fun Title2(
     text: String,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    color: Color = Color.White
 ) {
     Text(
         text = text,
@@ -36,7 +38,7 @@ fun Title2(
             fontFamily = jost,
             fontWeight = FontWeight.SemiBold,
             fontSize = 20.sp,
-            color = Color.White),
+            color = color),
         modifier = modifier,
         letterSpacing = 2.sp)
 }

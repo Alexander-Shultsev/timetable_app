@@ -17,3 +17,7 @@ val ButtonWednesdayLight = Color(0x4D00ACC1)
 val ButtonThursdayLight = Color(0x4D00897B)
 val ButtonFridayLight = Color(0x4D43A047)
 val ButtonSaturdayLight = Color(0x4DA09E43)
+
+
+val Gray = Color(0xFF8B8B8B)
+val GrayDark = Color(0xFF4B4B4B)

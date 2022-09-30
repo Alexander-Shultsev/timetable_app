@@ -18,6 +18,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.timetable_compose_9901.downloadStartScreenIsSuccess
+import com.example.timetable_compose_9901.sharedPreferences
+import com.example.timetable_compose_9901.sharedPreferencesEditor
 import com.example.timetable_compose_9901.timetableViewModel
 import com.example.timetable_compose_9901.view.component.Title1
 import com.example.timetable_compose_9901.view.component.Title2
@@ -60,8 +62,12 @@ fun ChangeGroupScreen(
                                 .fillMaxWidth()
                                 .padding(bottom = 15.dp)
                                 .clickable {
-                                    navigate(navController, NavItemMain.Timetable.route)
                                     timetableViewModel.setGroup(item)
+                                    sharedPreferencesEditor.putString(
+                                        "isLoginOne",
+                                        timetableViewModel.getCurrentGroupString()
+                                    ).commit()
+                                    navigate(navController, NavItemMain.Timetable.route)
                                 },
                             backgroundColor =
                                 when (timetableViewModel.currentGroupString.value) {

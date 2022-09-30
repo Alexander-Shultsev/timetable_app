@@ -5,13 +5,14 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.timetable_compose_9901.data.*
+import com.example.timetable_compose_9901.sharedPreferences
 import com.example.timetable_compose_9901.view.theme.*
 import java.text.SimpleDateFormat
 import java.util.*
 
 val topDownWeekArray = arrayOf(
-    "Верхняя неделя",
-    "Нижняя неделя",
+    "верхняя неделя",
+    "нижняя неделя",
     "",
 )
 
@@ -35,13 +36,13 @@ val weekButtons = arrayOf(
 
 class TimetableViewModel: ViewModel() {
 
-    private val _topDownWeek: MutableLiveData<String> = MutableLiveData(topDownWeekArray[0])
+    private val _topDownWeek: MutableLiveData<String> = MutableLiveData(topDownWeekArray[2])
     private val _zoomImage: MutableLiveData<Float> = MutableLiveData(1f)
     private val _offsetImage: MutableLiveData<Offset> = MutableLiveData(Offset.Zero)
     private val _currentWeekButton: MutableLiveData<WeekButtonItem> = MutableLiveData(weekButtons[0])
     private val _currentGroupString: MutableLiveData<String> = MutableLiveData("")
-    private val _currentImage: MutableLiveData<GroupItem> = MutableLiveData(g9901[0])
-    private val _currentGroup: MutableLiveData<Array<GroupItem>> = MutableLiveData(g9901)
+    private val _currentImage: MutableLiveData<GroupItem> = MutableLiveData()
+    private val _currentGroup: MutableLiveData<Array<GroupItem>> = MutableLiveData()
 
     val topDownWeek: LiveData<String> = _topDownWeek
     val zoomImage: LiveData<Float> = _zoomImage
@@ -52,10 +53,25 @@ class TimetableViewModel: ViewModel() {
     val currentGroup: LiveData<Array<GroupItem>> = _currentGroup
 
     var currentCourse: Array<String> = arrayOf()
+    var currentDayNumber: Int = 0
 
     init {
-        setCurrentDay()
         setCurrentWeek()
+        getCurrentDate()
+    }
+
+    fun initTimetableScreen() {
+        setCurrentGroup()
+        setCurrentDay()
+    }
+
+    private fun setCurrentGroup() {
+        val currentGroup = sharedPreferences.getString("isLoginOne", null)
+        getCurrentGroup(currentGroup!!)
+    }
+
+    fun getCurrentGroupString(): String {
+        return currentGroupString.value!!
     }
 
     fun setCourse(course: String) {
@@ -86,8 +102,6 @@ class TimetableViewModel: ViewModel() {
 
     private fun getCurrentGroup(group: String) {
         _currentGroup.value = when(group)  {
-
-
             "1 course/2781" -> g2781
             "1 course/2791" -> g2791
             "1 course/2792" -> g2792
@@ -158,30 +172,22 @@ class TimetableViewModel: ViewModel() {
     private fun setCurrentWeek() {
         val numberWeekOfYear = SimpleDateFormat("w").format(Date()).toInt() % 2
 
-        if (numberWeekOfYear % 2 == 0) {
-            _topDownWeek.postValue(topDownWeekArray[0])
-        } else {
-            _topDownWeek.postValue(topDownWeekArray[1])
-        }
-
-        when(numberWeekOfYear) {
-            0 -> _topDownWeek.postValue(topDownWeekArray[0])
-            1 -> _topDownWeek.postValue(topDownWeekArray[1])
+        when(numberWeekOfYear % 2) {
+            0 -> _topDownWeek.postValue(topDownWeekArray[1])
+            1 -> _topDownWeek.postValue(topDownWeekArray[0])
             else -> _topDownWeek.postValue("Неделя не определена")
         }
     }
 
     /* Получить текущий день недели */
-    private fun getCurrentDate(): Int {
-        return SimpleDateFormat("u").format(Date()).toInt() - 1
+    private fun getCurrentDate() {
+        currentDayNumber = SimpleDateFormat("u").format(Date()).toInt() - 1
     }
 
-    fun setCurrentDay() {
-        val numberDayOfWeek = getCurrentDate()
-
-        if (numberDayOfWeek in 0 until 5) {
-            _currentWeekButton.value = weekButtons[numberDayOfWeek]
-            _currentImage.value = currentGroup.value!![numberDayOfWeek]
+    private fun setCurrentDay() {
+        if (currentDayNumber in 0 until 5) {
+            _currentWeekButton.value = weekButtons[currentDayNumber]
+            _currentImage.value = currentGroup.value!![currentDayNumber]
         } else {
             _currentWeekButton.value = weekButtons[0]
             _currentImage.value = currentGroup.value!![0]

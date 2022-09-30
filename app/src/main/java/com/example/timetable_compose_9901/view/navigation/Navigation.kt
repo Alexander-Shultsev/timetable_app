@@ -24,12 +24,14 @@ sealed class NavItemMain(
 
 /* Контроллер навигации */
 @Composable
-fun NavHostMain() {
+fun NavHostMain(
+    startDestination: String
+) {
     val navController = rememberNavController()
 
     NavHost(
         navController = navController,
-        startDestination = NavItemMain.ChangeCourse.route
+        startDestination = startDestination
     ) {
         composable(NavItemMain.Timetable.route) {
             TimetableScreen(navController)
