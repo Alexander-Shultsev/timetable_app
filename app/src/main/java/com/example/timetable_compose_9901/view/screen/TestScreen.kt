@@ -1,59 +1,74 @@
 package com.example.timetable_compose_9901.view.screen
 
+import android.Manifest
+import android.app.Activity
 import android.content.ContentValues.TAG
-import android.graphics.Bitmap
-import android.graphics.drawable.BitmapDrawable
-import android.graphics.drawable.Drawable
-import android.net.Uri
+import android.content.pm.PackageManager
+import android.os.Environment
 import android.util.Log
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.unit.dp
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.timetable_compose_9901.downloadStartScreenIsSuccess
 import com.example.timetable_compose_9901.main.App
 import com.example.timetable_compose_9901.viewModel.TimetableViewModel
+import org.apache.poi.xwpf.extractor.XWPFWordExtractor
+import org.apache.poi.xwpf.usermodel.XWPFDocument
+import org.apache.poi.
+import java.io.File
+import java.io.FileInputStream
 import java.io.InputStream
 
 
 @Composable
 fun TestScreen(
     navController: NavController,
-    timetableViewModel: TimetableViewModel = viewModel()
+    timetableViewModel: TimetableViewModel = viewModel(),
+    activity: Activity = Activity()
 ) {
     downloadStartScreenIsSuccess = true
 
-//    val resId: Int = App.applicationContext().resources.getIdentifier("img_friday.png", "drawable", App.applicationContext().packageName)
-//    val image = "drawable://1 course/2781/img_friday.png".toUri()
-//
-//    val stream: InputStream = App.applicationContext().assets.open("img_friday.png")
-//    val d = Drawable.createFromStream(stream, null)
+    getPermission(activity)
+}
 
-//    val otherPath: Uri = Uri.parse("android.resource://com.example.timetable_compose_9901/drawable/img_friday.png")
-//
-//    Log.i(TAG, "TestScreen: $otherPath")
-//
-//    val image = timetableViewModel.getImage(otherPath)
 
-//    val bitmap: Bitmap
-//    if (d is BitmapDrawable) {
-//        bitmap = d.bitmap
-//
-//        Image(
-//            bitmap = bitmap.asImageBitmap(),
-//            contentDescription = null,
-//            modifier = Modifier.size(100.dp)
-//        )
-//    }
-//
+private fun getPermission(activity: Activity) {
+    if (ContextCompat.checkSelfPermission(App.applicationContext(), Manifest.permission.READ_EXTERNAL_STORAGE)
+        == PackageManager.PERMISSION_GRANTED
+    ) {
+        readDoc()
+    } else {
+        val permission = arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE)
+        ActivityCompat.requestPermissions(activity, permission, 0)
+    }
+}
 
-//    Image(
-//        painter = painterResource(id = resId),
-//        contentDescription = null,
-//        Modifier.size(100.dp)
-//    )
+private fun loadDoc(ourDirectory: File): File? {
+    ourDirectory.let {
+        var retrievedDoc = File(ourDirectory, "10.10.2022.doc")
+        return retrievedDoc
+    }
+}
+
+private fun readDoc() {
+    loadDoc(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)).let {
+        Log.i(TAG, "readDoc: $it")
+        try {
+            //Reading it as stream
+            val docStream = FileInputStream(it)
+            val targetDoc = XWPFDocument(docStream)
+
+            //creating a constructor object for extracting text from the word document
+            val wordExtractor = XWPFWordExtractor(targetDoc)
+            val docText = wordExtractor.text
+            Log.i(TAG, "readDoc: $docText")
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
 }

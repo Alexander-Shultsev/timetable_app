@@ -27,3 +27,20 @@ class App : Application() {
         val context: Context = App.applicationContext()
     }
 }
+
+//class MyApp : Application() {
+//    override fun onCreate() {
+//        instance = this
+//        super.onCreate()
+//    }
+//
+//    companion object {
+//        var instance: MyApp? = null
+//            private set
+//
+//        // or return instance.getApplicationContext();
+//        val context: Context?
+//            get() = instance
+//        // or return instance.getApplicationContext();
+//    }
+//}

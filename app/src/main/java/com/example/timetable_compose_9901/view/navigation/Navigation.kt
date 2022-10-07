@@ -1,8 +1,10 @@
 package com.example.timetable_compose_9901.view.navigation
 
+import android.app.Activity
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
+import androidx.navigation.activity
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -25,7 +27,8 @@ sealed class NavItemMain(
 /* Контроллер навигации */
 @Composable
 fun NavHostMain(
-    startDestination: String
+    startDestination: String,
+    activity: Activity = Activity()
 ) {
     val navController = rememberNavController()
 
@@ -37,7 +40,7 @@ fun NavHostMain(
             TimetableScreen(navController)
         }
         composable(NavItemMain.Test.route) {
-            TestScreen(navController)
+            TestScreen(navController, activity = activity)
         }
         composable(NavItemMain.ChangeCourse.route) {
             ChangeCourseScreen(navController)

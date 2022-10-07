@@ -43,14 +43,17 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             timetableViewModel = viewModel()
-            NavHostMain(startDestination = NavItemMain.ChangeCourse.route)
+            NavHostMain(
+                startDestination = NavItemMain.Test.route,
+                activity = this
+            )
 
 //            sharedPreferencesEditor.clear().commit()
 
             if (sharedPreferences.getString("isLoginOne", null) != null) {
-                NavHostMain(startDestination = NavItemMain.Timetable.route)
+                NavHostMain(startDestination = NavItemMain.Test.route, activity = this)
             } else {
-                NavHostMain(startDestination = NavItemMain.ChangeCourse.route)
+                NavHostMain(startDestination = NavItemMain.Test.route, activity = this)
             }
         }
     }
