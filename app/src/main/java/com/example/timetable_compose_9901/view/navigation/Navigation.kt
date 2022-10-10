@@ -10,6 +10,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.timetable_compose_9901.view.screen.ChangeCourse.ChangeCourseScreen
 import com.example.timetable_compose_9901.view.screen.ChangeGroup.ChangeGroupScreen
+import com.example.timetable_compose_9901.view.screen.ChangeInTimetable.ChangeInTimetableScreen
 import com.example.timetable_compose_9901.view.screen.TestScreen
 import com.example.timetable_compose_9901.view.screen.Timetable.TimetableScreen
 
@@ -22,6 +23,7 @@ sealed class NavItemMain(
     object Test: NavItemMain("Test")
     object ChangeCourse: NavItemMain("ChangeCourse")
     object ChangeGroup: NavItemMain("ChangeGroup")
+    object ChangeInTimetable: NavItemMain("ChangeInTimetable")
 }
 
 /* Контроллер навигации */
@@ -47,6 +49,9 @@ fun NavHostMain(
         }
         composable(NavItemMain.ChangeGroup.route) {
             ChangeGroupScreen(navController)
+        }
+        composable(NavItemMain.ChangeInTimetable.route) {
+            ChangeInTimetableScreen(navController)
         }
     }
 }

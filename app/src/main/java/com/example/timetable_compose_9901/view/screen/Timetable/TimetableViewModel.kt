@@ -1,14 +1,37 @@
 package com.example.timetable_compose_9901.viewModel
 
+import android.Manifest
+import android.app.Activity
+import android.app.DownloadManager
+import android.content.BroadcastReceiver
+import android.content.ContentValues.TAG
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
+import android.content.pm.PackageManager
+import android.net.Uri
+import android.os.Environment
+import android.util.Log
+import android.widget.Toast
 import androidx.compose.ui.geometry.Offset
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.timetable_compose_9901.data.*
+import com.example.timetable_compose_9901.main.App
 import com.example.timetable_compose_9901.sharedPreferences
 import com.example.timetable_compose_9901.view.theme.*
+import org.apache.poi.hwpf.HWPFDocument
+import org.apache.poi.hwpf.extractor.WordExtractor
+import org.jsoup.Jsoup
+import java.io.File
+import java.io.FileInputStream
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.concurrent.thread
 
 val topDownWeekArray = arrayOf(
     "верхняя неделя",
@@ -17,7 +40,7 @@ val topDownWeekArray = arrayOf(
 )
 
 /* Тип данных для кнопки дня недели */
-data class WeekButtonItem (
+data class WeekButtonItem(
     val name: String,
     val color: androidx.compose.ui.graphics.Color,
     val colorDefault: androidx.compose.ui.graphics.Color
@@ -34,30 +57,169 @@ val weekButtons = arrayOf(
     WeekButtonItem("СБ", ButtonSaturday, ButtonSaturdayLight),
 )
 
-class TimetableViewModel: ViewModel() {
+class TimetableViewModel : ViewModel() {
 
     private val _topDownWeek: MutableLiveData<String> = MutableLiveData(topDownWeekArray[2])
     private val _zoomImage: MutableLiveData<Float> = MutableLiveData(1f)
     private val _offsetImage: MutableLiveData<Offset> = MutableLiveData(Offset.Zero)
-    private val _currentWeekButton: MutableLiveData<WeekButtonItem> = MutableLiveData(weekButtons[0])
+    private val _currentWeekButton: MutableLiveData<WeekButtonItem> =
+        MutableLiveData(weekButtons[0])
     private val _currentGroupString: MutableLiveData<String> = MutableLiveData("")
     private val _currentImage: MutableLiveData<GroupItem> = MutableLiveData()
     private val _currentGroup: MutableLiveData<Array<GroupItem>> = MutableLiveData()
-
+    private val _changeInTimetable: MutableLiveData<String> = MutableLiveData()
+    private val _currentMonth: MutableLiveData<Int> = MutableLiveData()
     val topDownWeek: LiveData<String> = _topDownWeek
+
     val zoomImage: LiveData<Float> = _zoomImage
     val offsetImage: LiveData<Offset> = _offsetImage
     val currentWeekButton: LiveData<WeekButtonItem> = _currentWeekButton
     val currentImage: LiveData<GroupItem> = _currentImage
     val currentGroupString: LiveData<String> = _currentGroupString
     val currentGroup: LiveData<Array<GroupItem>> = _currentGroup
-
+    val changeInTimetable: LiveData<String> = _changeInTimetable
+    val currentMonth: LiveData<Int> = _currentMonth
     var currentCourse: Array<String> = arrayOf()
-    var currentDayNumber: Int = 0
+
+    private var currentMonthUrl: String = ""
+    private var currentDayUrl: String = ""
+    var currentDayWeek: Int = 0
+    var currentDay: String = ""
 
     init {
         setCurrentWeek()
+        getCurrentDateWeek()
+        getCurrentMonth()
+        thread(start = true) { getMonthURL() }
+    }
+
+    private fun loadDoc(
+        ourDirectory: File?,
+        currentDate: String
+    ): File? {
+        ourDirectory?.let {
+            Log.i(TAG, "loadDoc: ${File(ourDirectory, "$currentDate.doc")}")
+            return File(ourDirectory, "10.10.2022.doc")
+        }
+        return null
+    }
+
+    val monthList = arrayOf(
+        "Январь",
+        "Февраль",
+        "Март",
+        "Апрель",
+        "Май",
+        "Июнь",
+        "Июль",
+        "Август",
+        "Сентябрь",
+        "Октябрь",
+        "Ноябрь",
+        "Декабрь"
+    )
+
+    private var monthText = listOf("")
+    private var monthUrl = listOf("")
+
+    fun getMonthURL() {
+        Thread {
+            val url = "https://portal.novsu.ru/univer/timetable/spo/i.1473214//?id=1473211"
+            val document = Jsoup.connect(url).get()
+            monthText = document.select(".npe_documents_portlet tr a").text().split(" ")
+            monthUrl = document.select(".npe_documents_portlet tr a").eachAttr("href")
+
+            for (i in 0..monthText.count() step 2) {
+                if (i < monthText.count()) {
+                    currentMonth.value?.let {
+                        if (monthText[i] == monthList[it]) {
+                            currentMonthUrl = monthUrl[i]
+                            getUrlOnFile()
+                        }
+                    }
+                }
+            }
+        }.start()
+    }
+
+    private var dayText = listOf("")
+    private var dayUrl = listOf("")
+
+    fun getUrlOnFile() {
         getCurrentDate()
+
+        Thread {
+            val document = Jsoup.connect(currentMonthUrl).get()
+            dayText = document.select(".npe_documents_portlet tr a").text().split(" ")
+            dayUrl = document.select(".npe_documents_portlet tr a").eachAttr("href")
+
+            Log.i(TAG, "getUrlOnFile: $currentDay")
+
+            for (i in 0 until dayText.count()) {
+                if (dayText[i] == currentDay) {
+                    currentDayUrl = dayUrl[i]
+                }
+            }
+            if (currentDayUrl != "") {
+                readDoc()
+            }
+        }.start()
+    }
+
+    private fun downloadWord(link : String, title : String) {
+        val request = DownloadManager.Request(
+            Uri.parse(link))
+            .setTitle("$title.docx")
+            .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE)
+            .setAllowedOverMetered(true)
+
+        val dm = Activity(Context.DOWNLOAD_SERVICE) as DownloadManager
+        myDownloadid = dm.enqueue(request)
+
+        val br = object: BroadcastReceiver() {
+            override fun onReceive(context: Context?, intent: Intent?) {
+                val id = intent?.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
+                if (id == myDownloadid) {
+                    Toast.makeText(this@ReadFromFileActivity, "Download completed", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+        registerReceiver(br, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
+    }
+
+    fun getPermission(activity: Activity) {
+        if (ContextCompat.checkSelfPermission(
+                App.applicationContext(),
+                Manifest.permission.READ_EXTERNAL_STORAGE
+            )
+            == PackageManager.PERMISSION_GRANTED
+        ) {
+            readDoc()
+        } else {
+            val permission = arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE)
+            ActivityCompat.requestPermissions(activity, permission, 0)
+        }
+    }
+
+    private fun readDoc() {
+        val file = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+        loadDoc(
+            ourDirectory = file,
+            currentDate = currentDay
+        ).let {
+            try {
+                // Reading it as stream
+                val docStream = FileInputStream(it)
+                val targetDoc = HWPFDocument(docStream)
+
+                // creating a constructor object for extracting text from the word document
+                val wordExtractor = WordExtractor(targetDoc)
+                val docText = wordExtractor.text
+                _changeInTimetable.value = docText
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
     }
 
     fun initTimetableScreen() {
@@ -101,7 +263,7 @@ class TimetableViewModel: ViewModel() {
     }
 
     private fun getCurrentGroup(group: String) {
-        _currentGroup.value = when(group)  {
+        _currentGroup.value = when (group) {
             "1 course/2781" -> g2781
             "1 course/2791" -> g2791
             "1 course/2792" -> g2792
@@ -159,7 +321,7 @@ class TimetableViewModel: ViewModel() {
     }
 
     private fun getCurrentCourse(course: String) {
-        currentCourse = when(course) {
+        currentCourse = when (course) {
             "1 course/" -> GroupArray.course1
             "2 course/" -> GroupArray.course2
             "3 course/" -> GroupArray.course3
@@ -168,11 +330,17 @@ class TimetableViewModel: ViewModel() {
         }
     }
 
+    /* Получить текущий месяц */
+    fun getCurrentMonth() {
+        _currentMonth.value = SimpleDateFormat("M").format(Date()).toInt() - 1
+    }
+
     /* Получить тип недели */
     private fun setCurrentWeek() {
+        /* TODO возможно проблема связана с локализацией */
         val numberWeekOfYear = SimpleDateFormat("w").format(Date()).toInt() % 2
 
-        when(numberWeekOfYear % 2) {
+        when (numberWeekOfYear % 2) {
             0 -> _topDownWeek.postValue(topDownWeekArray[1])
             1 -> _topDownWeek.postValue(topDownWeekArray[0])
             else -> _topDownWeek.postValue("Неделя не определена")
@@ -180,14 +348,19 @@ class TimetableViewModel: ViewModel() {
     }
 
     /* Получить текущий день недели */
+    private fun getCurrentDateWeek() {
+        currentDayWeek = SimpleDateFormat("u").format(Date()).toInt() - 1
+    }
+
+    /* Получить текущую дату */
     private fun getCurrentDate() {
-        currentDayNumber = SimpleDateFormat("u").format(Date()).toInt() - 1
+        currentDay = SimpleDateFormat("dd.MM.yyyy").format(Date()).toString()
     }
 
     private fun setCurrentDay() {
-        if (currentDayNumber in 0 until 5) {
-            _currentWeekButton.value = weekButtons[currentDayNumber]
-            _currentImage.value = currentGroup.value!![currentDayNumber]
+        if (currentDayWeek in 0 until 5) {
+            _currentWeekButton.value = weekButtons[currentDayWeek]
+            _currentImage.value = currentGroup.value!![currentDayWeek]
         } else {
             _currentWeekButton.value = weekButtons[0]
             _currentImage.value = currentGroup.value!![0]

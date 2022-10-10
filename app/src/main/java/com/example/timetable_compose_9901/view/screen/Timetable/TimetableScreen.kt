@@ -75,9 +75,22 @@ fun TimetableScreen(
                     tint = GrayDark,
                     contentDescription = null,
                     modifier = Modifier
-                        .size(66.dp)
+                        .size(50.dp)
                         .clickable {
                             navigate(navController, NavItemMain.ChangeCourse.route)
+                        }
+                )
+                Icon(
+                    painter = painterResource(
+                        id = R.drawable.ic_change_in_timetable
+                    ),
+                    tint = GrayDark,
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(50.dp)
+                        .padding(start = 5.dp)
+                        .clickable {
+                            navigate(navController, NavItemMain.ChangeInTimetable.route)
                         }
                 )
             }
