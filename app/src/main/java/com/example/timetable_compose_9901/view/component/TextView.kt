@@ -44,6 +44,22 @@ fun Title2(
 }
 
 @Composable
+fun TitleBig(
+    text: String,
+    modifier: Modifier = Modifier,
+    color: Color = Color.White
+) {
+    Text(
+        text = text,
+        style = TextStyle(
+            fontFamily = jost,
+            fontWeight = FontWeight.Bold,
+            fontSize = 35.sp,
+            color = color),
+        modifier = modifier)
+}
+
+@Composable
 fun TitleButton(
     text: String,
     modifier: Modifier = Modifier,

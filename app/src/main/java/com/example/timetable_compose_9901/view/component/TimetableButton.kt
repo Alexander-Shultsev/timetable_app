@@ -10,6 +10,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
 import com.example.timetable_compose_9901.view.theme.*
 import com.example.timetable_compose_9901.viewModel.TimetableViewModel
 import com.example.timetable_compose_9901.viewModel.WeekButtonItem
@@ -70,5 +71,26 @@ fun TimetableButton(
             }
         )
     }
+}
+
+@Composable
+fun ButtonChangeInTimetable(
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit
+) {
+    Box(
+        modifier = modifier
+            .clickable { onClick() }
+            .background(GrayDarkMore)
+            .fillMaxWidth()
+            .padding(top = 10.dp, bottom = 10.dp)
+            .clip(Shapes.small),
+        contentAlignment = Alignment.Center,
+        content = {
+            Title2(
+                text = "Изменения в расписании",
+                color = Color.White)
+        }
+    )
 }
 

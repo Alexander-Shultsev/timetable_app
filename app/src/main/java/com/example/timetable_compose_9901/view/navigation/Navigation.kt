@@ -51,7 +51,7 @@ fun NavHostMain(
             ChangeGroupScreen(navController)
         }
         composable(NavItemMain.ChangeInTimetable.route) {
-            ChangeInTimetableScreen(navController)
+            ChangeInTimetableScreen(navController, activity = activity)
         }
     }
 }

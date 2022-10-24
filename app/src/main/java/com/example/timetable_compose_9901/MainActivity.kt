@@ -3,6 +3,7 @@ package com.example.timetable_compose_9901
 import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.SharedPreferences
+import android.content.res.Configuration
 import android.os.Bundle
 import android.text.format.Time
 import android.util.Log
@@ -16,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.core.content.SharedPreferencesCompat
 import androidx.core.content.edit
+import androidx.core.os.ConfigurationCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.timetable_compose_9901.main.App
@@ -23,11 +25,14 @@ import com.example.timetable_compose_9901.view.navigation.NavHostMain
 import com.example.timetable_compose_9901.view.navigation.NavItemMain
 import com.example.timetable_compose_9901.view.theme.TimetableTheme
 import com.example.timetable_compose_9901.viewModel.TimetableViewModel
+import java.util.Locale
 
 var downloadStartScreenIsSuccess: Boolean = false
 lateinit var timetableViewModel: TimetableViewModel
 lateinit var sharedPreferences: SharedPreferences
 lateinit var sharedPreferencesEditor: SharedPreferences.Editor
+lateinit var downloadService: String
+lateinit var currentLocale: Locale
 
 class MainActivity : ComponentActivity() {
 
@@ -40,6 +45,8 @@ class MainActivity : ComponentActivity() {
 
         // Переход на экран с splash экрана после подгрузки всего контента
         goToMainScreen()
+        downloadService = DOWNLOAD_SERVICE // сервис для загрузки
+        currentLocale = ConfigurationCompat.getLocales(resources.configuration)[0]!!
 
         setContent {
             timetableViewModel = viewModel()
@@ -48,13 +55,14 @@ class MainActivity : ComponentActivity() {
 //                activity = this
 //            )
 
-            sharedPreferencesEditor.clear().commit()
+//            sharedPreferencesEditor.clear().commit()
 
             if (sharedPreferences.getString("isLoginOne", null) != null) {
                 NavHostMain(startDestination = NavItemMain.Timetable.route, activity = this)
             } else {
                 NavHostMain(startDestination = NavItemMain.ChangeCourse.route, activity = this)
             }
+
         }
     }
 

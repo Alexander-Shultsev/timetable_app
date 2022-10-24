@@ -3,6 +3,8 @@ package com.example.timetable_compose_9901.viewModel
 import android.Manifest
 import android.app.Activity
 import android.app.DownloadManager
+import android.app.DownloadManager.Request
+import android.app.Service
 import android.content.BroadcastReceiver
 import android.content.ContentValues.TAG
 import android.content.Context
@@ -10,6 +12,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.net.Uri
+import android.opengl.Visibility
 import android.os.Environment
 import android.util.Log
 import android.widget.Toast
@@ -20,7 +23,9 @@ import androidx.core.content.ContextCompat.getSystemService
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.timetable_compose_9901.currentLocale
 import com.example.timetable_compose_9901.data.*
+import com.example.timetable_compose_9901.downloadService
 import com.example.timetable_compose_9901.main.App
 import com.example.timetable_compose_9901.sharedPreferences
 import com.example.timetable_compose_9901.view.theme.*
@@ -32,11 +37,12 @@ import java.io.FileInputStream
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.concurrent.thread
+import kotlin.math.log
 
 val topDownWeekArray = arrayOf(
-    "верхняя неделя",
-    "нижняя неделя",
-    "",
+    "Нижняя",
+    "Верхняя",
+    ""
 )
 
 /* Тип данных для кнопки дня недели */
@@ -90,21 +96,20 @@ class TimetableViewModel : ViewModel() {
         setCurrentWeek()
         getCurrentDateWeek()
         getCurrentMonth()
-        thread(start = true) { getMonthURL() }
     }
 
+    // Подгрузка изобржения из локальной папки для чтения
     private fun loadDoc(
         ourDirectory: File?,
         currentDate: String
     ): File? {
         ourDirectory?.let {
-            Log.i(TAG, "loadDoc: ${File(ourDirectory, "$currentDate.doc")}")
-            return File(ourDirectory, "10.10.2022.doc")
+            return File(ourDirectory, "12.10.2022.doc")
         }
         return null
     }
 
-    val monthList = arrayOf(
+    private val monthList = arrayOf(
         "Январь",
         "Февраль",
         "Март",
@@ -122,7 +127,8 @@ class TimetableViewModel : ViewModel() {
     private var monthText = listOf("")
     private var monthUrl = listOf("")
 
-    fun getMonthURL() {
+    //  Получить ссылку на текущий месяц
+    private fun getMonthURL() {
         Thread {
             val url = "https://portal.novsu.ru/univer/timetable/spo/i.1473214//?id=1473211"
             val document = Jsoup.connect(url).get()
@@ -135,6 +141,7 @@ class TimetableViewModel : ViewModel() {
                         if (monthText[i] == monthList[it]) {
                             currentMonthUrl = monthUrl[i]
                             getUrlOnFile()
+                            return@Thread
                         }
                     }
                 }
@@ -145,62 +152,83 @@ class TimetableViewModel : ViewModel() {
     private var dayText = listOf("")
     private var dayUrl = listOf("")
 
-    fun getUrlOnFile() {
+    // Получить ссылку на файл с изменением в расписании
+    private fun getUrlOnFile() {
         getCurrentDate()
 
         Thread {
+            Log.i(TAG, "3")
             val document = Jsoup.connect(currentMonthUrl).get()
             dayText = document.select(".npe_documents_portlet tr a").text().split(" ")
             dayUrl = document.select(".npe_documents_portlet tr a").eachAttr("href")
 
-            Log.i(TAG, "getUrlOnFile: $currentDay")
+            currentDay = "12.10.2022"
 
             for (i in 0 until dayText.count()) {
                 if (dayText[i] == currentDay) {
                     currentDayUrl = dayUrl[i]
+                    Log.i(TAG, "getUrlOnFile: $currentDayUrl")
+                    downloadFile(currentDayUrl, currentDay)
+                    return@Thread
                 }
-            }
-            if (currentDayUrl != "") {
-                readDoc()
             }
         }.start()
     }
 
-    private fun downloadWord(link : String, title : String) {
-        val request = DownloadManager.Request(
-            Uri.parse(link))
-            .setTitle("$title.docx")
-            .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE)
+    // https://medium.com/@aungkyawmyint_26195/downloading-file-properly-in-android-d8cc28d25aca
+    // Загрузка файла из интернета
+    private fun downloadFile(link: String, titleFile: String) {
+        val request = Request(Uri.parse(link))
+            .setTitle("$12.10.2022.doc")
+            .setNotificationVisibility(Request.VISIBILITY_VISIBLE)
             .setAllowedOverMetered(true)
+            .setAllowedOverRoaming(true)
+            .setRequiresCharging(false)
 
-        val dm = Activity(Context.DOWNLOAD_SERVICE) as DownloadManager
-        myDownloadid = dm.enqueue(request)
+        val downloadManager by lazy {
+            App.applicationContext().getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+        }
+        val myDownloadId = downloadManager.enqueue(request)
 
         val br = object: BroadcastReceiver() {
             override fun onReceive(context: Context?, intent: Intent?) {
                 val id = intent?.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
-                if (id == myDownloadid) {
-                    Toast.makeText(this@ReadFromFileActivity, "Download completed", Toast.LENGTH_SHORT).show()
+                if (id == myDownloadId) {
+                    Toast.makeText(App.applicationContext(), "Download completed", Toast.LENGTH_SHORT).show()
                 }
             }
         }
-        registerReceiver(br, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
     }
 
+//    private fun downloadWord(link : String, title : String) {
+//        val request = Request(
+//            Uri.parse(link))
+//            .setTitle("$title.docx")
+//            .setNotificationVisibility(Request.VISIBILITY_VISIBLE)
+//            .setAllowedOverMetered(true)
+//
+//        val dm = Activity(Context.DOWNLOAD_SERVICE) as DownloadManager
+//        val myDownloadid = dm.enqueue(request)
+//
+//
+//        registerReceiver(br, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
+//    }
+
+    // Получение разнешений для получени информции об изъменении в расписании
     fun getPermission(activity: Activity) {
         if (ContextCompat.checkSelfPermission(
                 App.applicationContext(),
                 Manifest.permission.READ_EXTERNAL_STORAGE
-            )
-            == PackageManager.PERMISSION_GRANTED
+            ) == PackageManager.PERMISSION_GRANTED
         ) {
-            readDoc()
+            thread(start = true) { getMonthURL() }
         } else {
             val permission = arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE)
             ActivityCompat.requestPermissions(activity, permission, 0)
         }
     }
 
+    // Прочитать содержимое файла
     private fun readDoc() {
         val file = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
         loadDoc(
@@ -284,7 +312,6 @@ class TimetableViewModel : ViewModel() {
             "1 course/2995" -> g2995
             "1 course/2996" -> g2996
 
-
             "2 course/1791" -> g1791
             "2 course/1792" -> g1792
             "2 course/1911" -> g1911
@@ -297,7 +324,6 @@ class TimetableViewModel : ViewModel() {
             "2 course/1992" -> g1992
             "2 course/1994" -> g1994
 
-
             "3 course/0901" -> g0901
             "3 course/0902" -> g0902
             "3 course/0911" -> g0911
@@ -306,7 +332,6 @@ class TimetableViewModel : ViewModel() {
             "3 course/0941" -> g0941
             "3 course/0951" -> g0951
             "3 course/0952" -> g0952
-
 
             "4 course/9901" -> g9901
             "4 course/9903" -> g9903
@@ -320,6 +345,7 @@ class TimetableViewModel : ViewModel() {
         }
     }
 
+    // Получить текущее значение курса
     private fun getCurrentCourse(course: String) {
         currentCourse = when (course) {
             "1 course/" -> GroupArray.course1
@@ -332,31 +358,46 @@ class TimetableViewModel : ViewModel() {
 
     /* Получить текущий месяц */
     fun getCurrentMonth() {
-        _currentMonth.value = SimpleDateFormat("M").format(Date()).toInt() - 1
+        _currentMonth.value = SimpleDateFormat("M", currentLocale)
+            .format(Date()).toInt() - 1
     }
 
     /* Получить тип недели */
     private fun setCurrentWeek() {
-        /* TODO возможно проблема связана с локализацией */
-        val numberWeekOfYear = SimpleDateFormat("w").format(Date()).toInt() % 2
+        val numberWeekOfYear = SimpleDateFormat("w", currentLocale)
+            .format(Date()).toInt() % 2
 
-        when (numberWeekOfYear % 2) {
-            0 -> _topDownWeek.postValue(topDownWeekArray[1])
-            1 -> _topDownWeek.postValue(topDownWeekArray[0])
-            else -> _topDownWeek.postValue("Неделя не определена")
+        Log.i(TAG, "setCurrentWeek: $numberWeekOfYear")
+
+        if (currentLocale.toString() == "ru_RU") {
+            when (numberWeekOfYear) {
+                0 -> _topDownWeek.postValue(topDownWeekArray[1])
+                1 -> _topDownWeek.postValue(topDownWeekArray[0])
+                else -> _topDownWeek.postValue("Неделя не определена")
+            }
+        } else {
+            when (numberWeekOfYear) {
+                0 -> _topDownWeek.postValue(topDownWeekArray[0])
+                1 -> _topDownWeek.postValue(topDownWeekArray[1])
+                else -> _topDownWeek.postValue("Неделя не определена")
+            }
         }
+
     }
 
     /* Получить текущий день недели */
     private fun getCurrentDateWeek() {
-        currentDayWeek = SimpleDateFormat("u").format(Date()).toInt() - 1
+        currentDayWeek = SimpleDateFormat("u", currentLocale)
+            .format(Date()).toInt() - 1
     }
 
     /* Получить текущую дату */
     private fun getCurrentDate() {
-        currentDay = SimpleDateFormat("dd.MM.yyyy").format(Date()).toString()
+        currentDay = SimpleDateFormat("dd.MM.yyyy", currentLocale)
+            .format(Date()).toString()
     }
 
+    /* Изменить текущий день (картику и активную кнопку) */
     private fun setCurrentDay() {
         if (currentDayWeek in 0 until 5) {
             _currentWeekButton.value = weekButtons[currentDayWeek]

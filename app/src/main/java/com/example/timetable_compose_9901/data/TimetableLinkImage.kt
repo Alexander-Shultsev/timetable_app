@@ -27,8 +27,7 @@ val g2781 = arrayOf(
     GroupItem("СР", R.drawable.c1_2781_wednasday),
     GroupItem("ЧТ", R.drawable.c1_2781_thusday),
     GroupItem("ПТ", R.drawable.c1_2781_friday),
-    GroupItem("ПТ", R.drawable.c1_2781_sutuday),
-    GroupItem("СБ", R.drawable.img_rest)
+    GroupItem("СБ", R.drawable.c1_2781_sutuday),
 )
 val g2791 = arrayOf(
     GroupItem("ПН", R.drawable.c1_2791_monday),
@@ -301,7 +300,7 @@ val g0931 = arrayOf(
     GroupItem("СР", R.drawable.c3_0931_wednesday),
     GroupItem("ЧТ", R.drawable.c3_0931_thursday),
     GroupItem("ПТ", R.drawable.c3_0931_friday),
-    GroupItem("ПТ", R.drawable.c3_0931_suturday),
+    GroupItem("СБ", R.drawable.c3_0931_suturday),
 )
 val g0932 = arrayOf(
     GroupItem("ПН", R.drawable.c3_0932_monday),
