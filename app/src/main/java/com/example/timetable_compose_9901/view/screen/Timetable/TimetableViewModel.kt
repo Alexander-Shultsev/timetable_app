@@ -18,6 +18,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.compose.ui.geometry.Offset
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.lifecycle.LiveData
@@ -34,10 +35,11 @@ import org.apache.poi.hwpf.extractor.WordExtractor
 import org.jsoup.Jsoup
 import java.io.File
 import java.io.FileInputStream
+import java.io.FileOutputStream
+import java.net.URL
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.concurrent.thread
-import kotlin.math.log
 
 val topDownWeekArray = arrayOf(
     "Нижняя",
@@ -157,7 +159,6 @@ class TimetableViewModel : ViewModel() {
         getCurrentDate()
 
         Thread {
-            Log.i(TAG, "3")
             val document = Jsoup.connect(currentMonthUrl).get()
             dayText = document.select(".npe_documents_portlet tr a").text().split(" ")
             dayUrl = document.select(".npe_documents_portlet tr a").eachAttr("href")
@@ -167,17 +168,29 @@ class TimetableViewModel : ViewModel() {
             for (i in 0 until dayText.count()) {
                 if (dayText[i] == currentDay) {
                     currentDayUrl = dayUrl[i]
-                    Log.i(TAG, "getUrlOnFile: $currentDayUrl")
-                    downloadFile(currentDayUrl, currentDay)
+                    val path = App.applicationContext().getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)!!.path + "/12.10.2022.doc"
+                    downloadFile(currentDayUrl, path)
                     return@Thread
                 }
             }
         }.start()
     }
 
+
+    fun downloadFile(link: String, path: String) {
+        Thread {
+        URL(link).openStream().use { input ->
+            FileOutputStream(File(path)).use { output ->
+                val result = input.copyTo(output)
+                Log.i(TAG, "bite --- $result")
+            }
+        }
+    }.start()
+    }
+
     // https://medium.com/@aungkyawmyint_26195/downloading-file-properly-in-android-d8cc28d25aca
     // Загрузка файла из интернета
-    private fun downloadFile(link: String, titleFile: String) {
+    private fun downloadFil(link: String, titleFile: String) {
         val request = Request(Uri.parse(link))
             .setTitle("$12.10.2022.doc")
             .setNotificationVisibility(Request.VISIBILITY_VISIBLE)
@@ -366,8 +379,6 @@ class TimetableViewModel : ViewModel() {
     private fun setCurrentWeek() {
         val numberWeekOfYear = SimpleDateFormat("w", currentLocale)
             .format(Date()).toInt() % 2
-
-        Log.i(TAG, "setCurrentWeek: $numberWeekOfYear")
 
         if (currentLocale.toString() == "ru_RU") {
             when (numberWeekOfYear) {
