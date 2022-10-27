@@ -50,10 +50,10 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             timetableViewModel = viewModel()
-//            NavHostMain(
-//                startDestination = NavItemMain.ChangeCourse.route,
-//                activity = this
-//            )
+            NavHostMain(
+                startDestination = NavItemMain.ChangeCourse.route,
+                activity = this
+            )
 
 //            sharedPreferencesEditor.clear().commit()
 

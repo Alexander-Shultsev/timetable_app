@@ -63,7 +63,7 @@ fun TimetableScreen(
                     shape = RoundedCornerShape(0.dp, 20.dp, 20.dp, 0.dp),
                     backgroundColor = Color.Black,
                     modifier = Modifier,
-                    border = BorderStroke(1.dp, currentWeekButton.value!!.colorDefault)
+                    border = BorderStroke(2.dp, currentWeekButton.value!!.color)
                 ) {
                     TitleBig( // Номер группы
                         text = topDownWeek.value!!,
