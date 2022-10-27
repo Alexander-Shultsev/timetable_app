@@ -176,16 +176,63 @@ class TimetableViewModel : ViewModel() {
         }.start()
     }
 
+//        private fun downloadFile(link: String, titleFile: String = "") {
+//    https://portal.novsu.ru/file/1913993
+//            try {
+//                val url = Uri.parse(this.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)!!.path + "/")
+//                Log.i(TAG, "downloadFile: $url")
+//
+//                val request = DownloadManager.Request(Uri.parse(link))
+//                    .setTitle("12.10.2022.doc")
+//                    .setDescription("descr")
+//                    .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+//                    .setDestinationUri(url)
+//                    .setAllowedOverMetered(true)
+//                    .setAllowedOverRoaming(true)
+//
+//                val downloadManager by lazy {
+//                    this.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+//                }
+//                val myDownloadId = downloadManager.enqueue(request)
+//
+//                val br = object: BroadcastReceiver() {
+//                    override fun onReceive(context: Context?, intent: Intent?) {
+//                        val id = intent?.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
+//                        if (id == myDownloadId) {
+//                            Toast.makeText(this@MainActivity, "Download completed", Toast.LENGTH_SHORT).show()
+//                        }
+//                    }
+//                }
+//                registerReceiver(br, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
+//            } catch (e: IllegalArgumentException) {
+//                Log.e(TAG, e.toString())
+//            }
+//        }
+//
+//        @Composable
+//        fun Content() {
+//            DownloadFileUsingUrlTheme {
+//                // A surface container using the 'background' color from the theme
+//                Surface(
+//                    modifier = Modifier.fillMaxSize(),
+//                    color = MaterialTheme.colors.background
+//                ) {
+//
+//                }
+//            }
+//        }
+//    }
+
 
     fun downloadFile(link: String, path: String) {
         Thread {
-        URL(link).openStream().use { input ->
-            FileOutputStream(File(path)).use { output ->
-                val result = input.copyTo(output)
-                Log.i(TAG, "bite --- $result")
+            URL(link).openStream().use { input ->
+                FileOutputStream(File(path)).use { output ->
+                    val result = input.copyTo(output)
+                    Log.i(TAG, "bite --- $result")
+                }
             }
-        }
-    }.start()
+        }.start()
     }
 
     // https://medium.com/@aungkyawmyint_26195/downloading-file-properly-in-android-d8cc28d25aca
