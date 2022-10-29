@@ -29,7 +29,6 @@ fun PinchImage(
         painter = painterResource(currentDay.value!!.image),
         contentDescription = null,
         modifier = modifier
-            .fillMaxWidth()
             .pointerInput(Unit) {
                 detectTransformGestures(
                     onGesture = { gestureCentroid, gesturePan, gestureZoom, _ ->

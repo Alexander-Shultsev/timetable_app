@@ -1,7 +1,12 @@
 package com.example.timetable_compose_9901.view.screen.Timetable
 
+import androidx.compose.animation.*
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.transformable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
@@ -62,13 +67,19 @@ fun TimetableScreen(
                 Card(
                     shape = RoundedCornerShape(0.dp, 20.dp, 20.dp, 0.dp),
                     backgroundColor = Color.Black,
-                    modifier = Modifier,
+                    modifier = Modifier
+                        .offset(x = (-3).dp),
                     border = BorderStroke(2.dp, currentWeekButton.value!!.color)
                 ) {
                     TitleBig( // Номер группы
                         text = topDownWeek.value!!,
                         color = currentWeekButton.value!!.color,
-                        modifier = Modifier.padding(start = paddingMain, end = paddingMain + 5.dp, top = 6.dp, bottom = 6.dp)
+                        modifier = Modifier.padding(
+                            start = paddingMain,
+                            end = paddingMain + 5.dp,
+                            top = 6.dp,
+                            bottom = 6.dp
+                        )
                     )
                 }
                 Card(
@@ -81,7 +92,7 @@ fun TimetableScreen(
                 ) {
                     TitleBig( // Номер группы
                         text = currentGroup,
-                        color = currentWeekButton.value!!.color,
+                        color = Color.Black,
                         modifier = Modifier.padding(start = paddingMain, end = paddingMain, top = 5.dp, bottom = 5.dp)
                     )
                 }
@@ -102,27 +113,23 @@ fun TimetableScreen(
 //                    },
 //                content = { // Картинка
             Column(
-                modifier = Modifier.weight(1f),
+                modifier = Modifier.fillMaxWidth().weight(1f),
 //                verticalArrangement = Arrangement.Center
             ) {
-//                Column(
-//                    modifier = Modifier.fillMaxWidth(),
-//                ) {
+                Column(
+                    modifier = Modifier.weight(1f),
+                ) {
                     PinchImage(
-                        currentImage, timetableViewModel
+                        currentImage, timetableViewModel, modifier = Modifier.fillMaxSize()
                     )
                     timetableViewModel.imageToStartScreen()
-//                    ButtonChangeInTimetable(
-//                        onClick = {
-//                            navController.navigate(NavItemMain.ChangeInTimetable.route)
-//                        }
-//                    )
-//                }
+                }
+                ButtonChangeInTimetable(
+                    onClick = {
+                        navController.navigate(NavItemMain.ChangeInTimetable.route)
+                    }
+                )
             }
-
-
-//                }
-//            )
 
             Row( // Кнопки навигации
                 modifier = Modifier

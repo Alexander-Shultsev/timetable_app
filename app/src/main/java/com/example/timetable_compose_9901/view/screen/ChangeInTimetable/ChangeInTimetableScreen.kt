@@ -3,6 +3,7 @@ package com.example.timetable_compose_9901.view.screen.ChangeInTimetable
 import android.Manifest
 import android.app.Activity
 import android.content.ContentValues
+import android.content.ContentValues.TAG
 import android.content.pm.PackageManager
 import android.os.Environment
 import android.util.Log
@@ -38,7 +39,8 @@ fun ChangeInTimetableScreen(
         modifier = Modifier.fillMaxSize(),
         color = Color.Black
     ) {
-        val text = "Если в течении 5 секунд расписание не появится, значит изменений на завтра нет, в этом случае нажмите кнопку назад"
+        Log.i(TAG, "ChangeInTimetableScreen: 4")
+        val text = "Если в течении 5 секунд расписание не появится, значит изменений на завтра нет. \n\nДля возвражения на главный экран нажмите кнопку назад"
         val changeInTimetable = timetableViewModel.changeInTimetable.observeAsState(text)
 
         timetableViewModel.getChangeInTimetable()

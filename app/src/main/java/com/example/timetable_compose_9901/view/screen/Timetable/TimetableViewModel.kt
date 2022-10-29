@@ -22,16 +22,15 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.getSystemService
+import androidx.core.net.toFile
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.timetable_compose_9901.currentLocale
+import com.example.timetable_compose_9901.*
 import com.example.timetable_compose_9901.data.*
-import com.example.timetable_compose_9901.downloadService
 import com.example.timetable_compose_9901.main.App
-import com.example.timetable_compose_9901.sharedPreferences
 import com.example.timetable_compose_9901.view.theme.*
 import kotlinx.coroutines.launch
 import org.apache.poi.hwpf.HWPFDocument
@@ -41,11 +40,17 @@ import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.net.URL
+import java.nio.file.Path
+import java.nio.file.Paths
+import java.nio.file.Paths.get
 import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.*
 import kotlin.concurrent.thread
+import kotlin.io.path.Path
+import kotlin.io.path.exists
+import kotlin.io.path.isDirectory
 
 val topDownWeekArray = arrayOf(
     "Нижняя",
@@ -129,6 +134,12 @@ class TimetableViewModel : ViewModel() {
     private var success = 0
 
     fun getChangeInTimetable() {
+        val file = File(Environment.getExternalStoragePublicDirectory(changeInTimetablePath).path + File.separator + "$tomorrowDay.doc")
+        if (isFileExists(file)) {
+            readDoc("$tomorrowDay.doc")
+            return
+        }
+
         if (success == 0) {
             getMonthURL()
         }
@@ -164,6 +175,7 @@ class TimetableViewModel : ViewModel() {
     private var dayUrl = listOf("")
 
 
+    private var fileName = ""
     // Получить ссылку на файл с изменением в расписании
     private fun getUrlOnFile() {
         val document = Jsoup.connect(currentMonthUrl).get()
@@ -173,12 +185,16 @@ class TimetableViewModel : ViewModel() {
         for (i in 0 until dayText.count()) {
             if (dayText[i] == tomorrowDay) {
                 currentDayUrl = dayUrl[i]
-                val fileName = "$tomorrowDay.doc"
+                fileName = "$tomorrowDay.doc"
 
                 downloadFile(currentDayUrl, fileName)
                 return
             }
         }
+    }
+
+    private fun isFileExists(file: File): Boolean {
+        return file.exists() && !file.isDirectory
     }
 
     // Загрузка файла из интернета
@@ -202,7 +218,6 @@ class TimetableViewModel : ViewModel() {
                 override fun onReceive(context: Context?, intent: Intent?) {
                     val id = intent?.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
                     if (id == myDownloadId) {
-                        Toast.makeText(App.applicationContext(), "Download completed", Toast.LENGTH_SHORT).show()
                         readDoc(fileName)
                     }
                 }
