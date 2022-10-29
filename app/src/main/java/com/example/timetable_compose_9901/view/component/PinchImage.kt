@@ -3,6 +3,7 @@ package com.example.timetable_compose_9901.view.component
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.gestures.detectTransformGestures
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.livedata.observeAsState
@@ -28,6 +29,7 @@ fun PinchImage(
         painter = painterResource(currentDay.value!!.image),
         contentDescription = null,
         modifier = modifier
+            .fillMaxWidth()
             .pointerInput(Unit) {
                 detectTransformGestures(
                     onGesture = { gestureCentroid, gesturePan, gestureZoom, _ ->

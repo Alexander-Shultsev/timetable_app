@@ -103,17 +103,21 @@ fun TimetableScreen(
 //                content = { // Картинка
             Column(
                 modifier = Modifier.weight(1f),
-                verticalArrangement = Arrangement.Center
+//                verticalArrangement = Arrangement.Center
             ) {
-                PinchImage(
-                    currentImage, timetableViewModel, modifier = Modifier.fillMaxWidth()
-                )
-                timetableViewModel.imageToStartScreen()
-                ButtonChangeInTimetable(
-                    onClick = {
-                        navController.navigate(NavItemMain.ChangeInTimetable.route)
-                    }
-                )
+//                Column(
+//                    modifier = Modifier.fillMaxWidth(),
+//                ) {
+                    PinchImage(
+                        currentImage, timetableViewModel
+                    )
+                    timetableViewModel.imageToStartScreen()
+//                    ButtonChangeInTimetable(
+//                        onClick = {
+//                            navController.navigate(NavItemMain.ChangeInTimetable.route)
+//                        }
+//                    )
+//                }
             }
 
 

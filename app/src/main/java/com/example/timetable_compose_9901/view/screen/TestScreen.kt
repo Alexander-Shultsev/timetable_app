@@ -28,7 +28,6 @@ import java.io.InputStream
 fun TestScreen(
     navController: NavController,
     timetableViewModel: TimetableViewModel = viewModel(),
-    activity: Activity = Activity()
 ) {
     downloadStartScreenIsSuccess = true
 }

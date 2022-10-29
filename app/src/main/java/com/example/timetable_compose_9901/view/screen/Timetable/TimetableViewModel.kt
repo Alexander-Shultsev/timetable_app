@@ -16,20 +16,24 @@ import android.opengl.Visibility
 import android.os.Environment
 import android.util.Log
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.ui.geometry.Offset
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.getSystemService
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.timetable_compose_9901.currentLocale
 import com.example.timetable_compose_9901.data.*
 import com.example.timetable_compose_9901.downloadService
 import com.example.timetable_compose_9901.main.App
 import com.example.timetable_compose_9901.sharedPreferences
 import com.example.timetable_compose_9901.view.theme.*
+import kotlinx.coroutines.launch
 import org.apache.poi.hwpf.HWPFDocument
 import org.apache.poi.hwpf.extractor.WordExtractor
 import org.jsoup.Jsoup
@@ -38,6 +42,8 @@ import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.net.URL
 import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import java.util.*
 import kotlin.concurrent.thread
 
@@ -93,22 +99,16 @@ class TimetableViewModel : ViewModel() {
     private var currentDayUrl: String = ""
     var currentDayWeek: Int = 0
     var currentDay: String = ""
+    var tomorrowDay: String = ""
+
+    private val changeInTimetablePath = Environment.DIRECTORY_DOWNLOADS
 
     init {
         setCurrentWeek()
         getCurrentDateWeek()
         getCurrentMonth()
-    }
-
-    // Подгрузка изобржения из локальной папки для чтения
-    private fun loadDoc(
-        ourDirectory: File?,
-        currentDate: String
-    ): File? {
-        ourDirectory?.let {
-            return File(ourDirectory, "12.10.2022.doc")
-        }
-        return null
+        getCurrentDate()
+        getTomorrowDate() // вызывается только после getCurrentDate()
     }
 
     private val monthList = arrayOf(
@@ -125,6 +125,15 @@ class TimetableViewModel : ViewModel() {
         "Ноябрь",
         "Декабрь"
     )
+
+    private var success = 0
+
+    fun getChangeInTimetable() {
+        if (success == 0) {
+            getMonthURL()
+        }
+        success = 1
+    }
 
     private var monthText = listOf("")
     private var monthUrl = listOf("")
@@ -154,146 +163,61 @@ class TimetableViewModel : ViewModel() {
     private var dayText = listOf("")
     private var dayUrl = listOf("")
 
+
     // Получить ссылку на файл с изменением в расписании
     private fun getUrlOnFile() {
-        getCurrentDate()
+        val document = Jsoup.connect(currentMonthUrl).get()
+        dayText = document.select(".npe_documents_portlet tr a").text().split(" ")
+        dayUrl = document.select(".npe_documents_portlet tr a").eachAttr("href")
 
-        Thread {
-            val document = Jsoup.connect(currentMonthUrl).get()
-            dayText = document.select(".npe_documents_portlet tr a").text().split(" ")
-            dayUrl = document.select(".npe_documents_portlet tr a").eachAttr("href")
+        for (i in 0 until dayText.count()) {
+            if (dayText[i] == tomorrowDay) {
+                currentDayUrl = dayUrl[i]
+                val fileName = "$tomorrowDay.doc"
 
-            currentDay = "12.10.2022"
-
-            for (i in 0 until dayText.count()) {
-                if (dayText[i] == currentDay) {
-                    currentDayUrl = dayUrl[i]
-                    val path = App.applicationContext().getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)!!.path + "/12.10.2022.doc"
-                    downloadFile(currentDayUrl, path)
-                    return@Thread
-                }
+                downloadFile(currentDayUrl, fileName)
+                return
             }
-        }.start()
+        }
     }
 
-//        private fun downloadFile(link: String, titleFile: String = "") {
-//    https://portal.novsu.ru/file/1913993
-//            try {
-//                val url = Uri.parse(this.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)!!.path + "/")
-//                Log.i(TAG, "downloadFile: $url")
-//
-//                val request = DownloadManager.Request(Uri.parse(link))
-//                    .setTitle("12.10.2022.doc")
-//                    .setDescription("descr")
-//                    .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
-//                    .setDestinationUri(url)
-//                    .setAllowedOverMetered(true)
-//                    .setAllowedOverRoaming(true)
-//
-//                val downloadManager by lazy {
-//                    this.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
-//                }
-//                val myDownloadId = downloadManager.enqueue(request)
-//
-//                val br = object: BroadcastReceiver() {
-//                    override fun onReceive(context: Context?, intent: Intent?) {
-//                        val id = intent?.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
-//                        if (id == myDownloadId) {
-//                            Toast.makeText(this@MainActivity, "Download completed", Toast.LENGTH_SHORT).show()
-//                        }
-//                    }
-//                }
-//                registerReceiver(br, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
-//            } catch (e: IllegalArgumentException) {
-//                Log.e(TAG, e.toString())
-//            }
-//        }
-//
-//        @Composable
-//        fun Content() {
-//            DownloadFileUsingUrlTheme {
-//                // A surface container using the 'background' color from the theme
-//                Surface(
-//                    modifier = Modifier.fillMaxSize(),
-//                    color = MaterialTheme.colors.background
-//                ) {
-//
-//                }
-//            }
-//        }
-//    }
-
-
-    fun downloadFile(link: String, path: String) {
-        Thread {
-            URL(link).openStream().use { input ->
-                FileOutputStream(File(path)).use { output ->
-                    val result = input.copyTo(output)
-                    Log.i(TAG, "bite --- $result")
-                }
-            }
-        }.start()
-    }
-
-    // https://medium.com/@aungkyawmyint_26195/downloading-file-properly-in-android-d8cc28d25aca
     // Загрузка файла из интернета
-    private fun downloadFil(link: String, titleFile: String) {
-        val request = Request(Uri.parse(link))
-            .setTitle("$12.10.2022.doc")
-            .setNotificationVisibility(Request.VISIBILITY_VISIBLE)
-            .setAllowedOverMetered(true)
-            .setAllowedOverRoaming(true)
-            .setRequiresCharging(false)
+    private fun downloadFile(link: String, fileName: String) {
+        try {
+            val request = Request(Uri.parse(link))
+            request
+                .setAllowedNetworkTypes(Request.NETWORK_MOBILE or Request.NETWORK_WIFI)
+                .setMimeType("application/msword")
+                .setAllowedOverRoaming(true)
+                .setTitle(fileName)
+                .setDestinationInExternalPublicDir(
+                    changeInTimetablePath,
+                    fileName
+                )
 
-        val downloadManager by lazy {
-            App.applicationContext().getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
-        }
-        val myDownloadId = downloadManager.enqueue(request)
+            val downloadManager = App.applicationContext().getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+            val myDownloadId = downloadManager.enqueue(request)
 
-        val br = object: BroadcastReceiver() {
-            override fun onReceive(context: Context?, intent: Intent?) {
-                val id = intent?.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
-                if (id == myDownloadId) {
-                    Toast.makeText(App.applicationContext(), "Download completed", Toast.LENGTH_SHORT).show()
+            val br = object: BroadcastReceiver() {
+                override fun onReceive(context: Context?, intent: Intent?) {
+                    val id = intent?.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
+                    if (id == myDownloadId) {
+                        Toast.makeText(App.applicationContext(), "Download completed", Toast.LENGTH_SHORT).show()
+                        readDoc(fileName)
+                    }
                 }
             }
-        }
-    }
-
-//    private fun downloadWord(link : String, title : String) {
-//        val request = Request(
-//            Uri.parse(link))
-//            .setTitle("$title.docx")
-//            .setNotificationVisibility(Request.VISIBILITY_VISIBLE)
-//            .setAllowedOverMetered(true)
-//
-//        val dm = Activity(Context.DOWNLOAD_SERVICE) as DownloadManager
-//        val myDownloadid = dm.enqueue(request)
-//
-//
-//        registerReceiver(br, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
-//    }
-
-    // Получение разнешений для получени информции об изъменении в расписании
-    fun getPermission(activity: Activity) {
-        if (ContextCompat.checkSelfPermission(
-                App.applicationContext(),
-                Manifest.permission.READ_EXTERNAL_STORAGE
-            ) == PackageManager.PERMISSION_GRANTED
-        ) {
-            thread(start = true) { getMonthURL() }
-        } else {
-            val permission = arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE)
-            ActivityCompat.requestPermissions(activity, permission, 0)
+            App.applicationContext().registerReceiver(br, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
+        } catch (e: IllegalArgumentException) {
+            Log.e(TAG, e.toString())
         }
     }
 
     // Прочитать содержимое файла
-    private fun readDoc() {
-        val file = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+    private fun readDoc(fileName: String) {
         loadDoc(
-            ourDirectory = file,
-            currentDate = currentDay
+            ourDirectory = Environment.getExternalStoragePublicDirectory(changeInTimetablePath),
+            fileName = fileName
         ).let {
             try {
                 // Reading it as stream
@@ -308,6 +232,17 @@ class TimetableViewModel : ViewModel() {
                 e.printStackTrace()
             }
         }
+    }
+
+    // Подгрузка изобржения из локальной папки для чтения
+    private fun loadDoc(
+        ourDirectory: File?,
+        fileName: String
+    ): File? {
+        ourDirectory?.let {
+            return File(ourDirectory, fileName)
+        }
+        return null
     }
 
     fun initTimetableScreen() {
@@ -417,7 +352,7 @@ class TimetableViewModel : ViewModel() {
     }
 
     /* Получить текущий месяц */
-    fun getCurrentMonth() {
+    private fun getCurrentMonth() {
         _currentMonth.value = SimpleDateFormat("M", currentLocale)
             .format(Date()).toInt() - 1
     }
@@ -453,6 +388,31 @@ class TimetableViewModel : ViewModel() {
     private fun getCurrentDate() {
         currentDay = SimpleDateFormat("dd.MM.yyyy", currentLocale)
             .format(Date()).toString()
+    }
+
+    /* Получить завтрашнюю дату */
+    private fun getTomorrowDate() {
+        val dateArray = currentDay.split(".")
+        var day = dateArray[0].toInt()
+        var month = dateArray[1].toInt()
+        var year = dateArray[2].toInt()
+
+        // максимальный день в месяце
+        val maxMonthDay = Calendar.getInstance().getActualMaximum(Calendar.DAY_OF_MONTH)
+
+        if (day == maxMonthDay) {
+            tomorrowDay = "01"
+            if (month == 12) {
+                year += 1
+                tomorrowDay += ".01.$year"
+            } else {
+                month += 1
+                tomorrowDay += ".$month.$year"
+            }
+        } else {
+            day += 1
+            tomorrowDay = "$day.$month.$year"
+        }
     }
 
     /* Изменить текущий день (картику и активную кнопку) */
