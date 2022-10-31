@@ -11,9 +11,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.example.timetable_compose_9901.view.screen.ChangeInTimetable.TimetableViewModel
+import com.example.timetable_compose_9901.view.screen.ChangeInTimetable.WeekButtonItem
 import com.example.timetable_compose_9901.view.theme.*
-import com.example.timetable_compose_9901.viewModel.TimetableViewModel
-import com.example.timetable_compose_9901.viewModel.WeekButtonItem
 
 @Composable
 fun TimetableButton(

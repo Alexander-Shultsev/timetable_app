@@ -15,7 +15,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.timetable_compose_9901.main.App
 import com.example.timetable_compose_9901.view.navigation.NavHostMain
 import com.example.timetable_compose_9901.view.navigation.NavItemMain
-import com.example.timetable_compose_9901.viewModel.TimetableViewModel
+import com.example.timetable_compose_9901.view.screen.ChangeInTimetable.TimetableViewModel
 import java.util.Locale
 
 var downloadStartScreenIsSuccess: Boolean = false

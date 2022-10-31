@@ -14,7 +14,7 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.painterResource
 import com.example.timetable_compose_9901.data.GroupItem
-import com.example.timetable_compose_9901.viewModel.TimetableViewModel
+import com.example.timetable_compose_9901.view.screen.ChangeInTimetable.TimetableViewModel
 
 @Composable
 fun PinchImage(

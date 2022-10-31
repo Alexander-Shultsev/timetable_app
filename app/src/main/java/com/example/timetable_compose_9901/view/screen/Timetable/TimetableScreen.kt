@@ -30,9 +30,9 @@ import com.example.timetable_compose_9901.downloadStartScreenIsSuccess
 import com.example.timetable_compose_9901.view.component.*
 import com.example.timetable_compose_9901.view.navigation.NavItemMain
 import com.example.timetable_compose_9901.view.navigation.navigate
+import com.example.timetable_compose_9901.view.screen.ChangeInTimetable.topDownWeekArray
+import com.example.timetable_compose_9901.view.screen.ChangeInTimetable.weekButtons
 import com.example.timetable_compose_9901.view.theme.*
-import com.example.timetable_compose_9901.viewModel.topDownWeekArray
-import com.example.timetable_compose_9901.viewModel.weekButtons
 import java.text.SimpleDateFormat
 import java.util.*
 

@@ -16,7 +16,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.timetable_compose_9901.downloadStartScreenIsSuccess
 import com.example.timetable_compose_9901.main.App
-import com.example.timetable_compose_9901.viewModel.TimetableViewModel
+import com.example.timetable_compose_9901.view.screen.ChangeInTimetable.TimetableViewModel
 import org.apache.poi.hwpf.extractor.WordExtractor
 import org.apache.poi.hwpf.HWPFDocument
 import java.io.File

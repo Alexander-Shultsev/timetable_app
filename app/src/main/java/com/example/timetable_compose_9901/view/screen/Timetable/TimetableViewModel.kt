@@ -1,4 +1,4 @@
-package com.example.timetable_compose_9901.viewModel
+package com.example.timetable_compose_9901.view.screen.ChangeInTimetable
 
 import android.Manifest
 import android.app.Activity
@@ -39,6 +39,7 @@ import org.jsoup.Jsoup
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
+import java.lang.Math.abs
 import java.net.URL
 import java.nio.file.Path
 import java.nio.file.Paths
@@ -157,11 +158,17 @@ class TimetableViewModel : ViewModel() {
             monthText = document.select(".npe_documents_portlet tr a").text().split(" ")
             monthUrl = document.select(".npe_documents_portlet tr a").eachAttr("href")
 
+
             for (i in 0..monthText.count() step 2) {
                 if (i < monthText.count()) {
                     currentMonth.value?.let {
-                        if (monthText[i] == monthList[it]) {
-                            currentMonthUrl = monthUrl[i]
+                        val monthNumber = if (tomorrowDay.split(".")[0] == "01") {
+                            currentMonth.value!! + 1
+                        } else {
+                            currentMonth.value!!
+                        }
+                        if (monthText[i] == monthList[monthNumber]) {
+                            currentMonthUrl = monthUrl[i / 2]
                             getUrlOnFile()
                             return@Thread
                         }
@@ -182,11 +189,11 @@ class TimetableViewModel : ViewModel() {
         dayText = document.select(".npe_documents_portlet tr a").text().split(" ")
         dayUrl = document.select(".npe_documents_portlet tr a").eachAttr("href")
 
+
         for (i in 0 until dayText.count()) {
             if (dayText[i] == tomorrowDay) {
                 currentDayUrl = dayUrl[i]
                 fileName = "$tomorrowDay.doc"
-
                 downloadFile(currentDayUrl, fileName)
                 return
             }
@@ -390,7 +397,6 @@ class TimetableViewModel : ViewModel() {
                 else -> _topDownWeek.postValue("Неделя не определена")
             }
         }
-
     }
 
     /* Получить текущий день недели */
@@ -422,11 +428,27 @@ class TimetableViewModel : ViewModel() {
                 tomorrowDay += ".01.$year"
             } else {
                 month += 1
-                tomorrowDay += ".$month.$year"
+                tomorrowDay += if (month < 10) {
+                    ".0$month.$year"
+                } else {
+                    ".$month.$year"
+                }
             }
         } else {
             day += 1
-            tomorrowDay = "$day.$month.$year"
+            tomorrowDay += if (day < 10) {
+                "0$day"
+            } else {
+                "$day"
+            }
+
+            tomorrowDay += if (month < 10) {
+                ".0$month"
+            } else {
+                ".$month"
+            }
+            
+            tomorrowDay += ".$year"
         }
     }
 

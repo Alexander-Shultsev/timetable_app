@@ -26,7 +26,6 @@ import com.example.timetable_compose_9901.view.component.Title2
 import com.example.timetable_compose_9901.view.navigation.NavItemMain
 import com.example.timetable_compose_9901.view.navigation.navigate
 import com.example.timetable_compose_9901.view.theme.*
-import com.example.timetable_compose_9901.viewModel.TimetableViewModel
 
 @Composable
 fun ChangeGroupScreen(

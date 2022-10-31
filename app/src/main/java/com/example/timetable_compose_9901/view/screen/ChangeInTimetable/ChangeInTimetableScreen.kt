@@ -25,7 +25,6 @@ import com.example.timetable_compose_9901.downloadStartScreenIsSuccess
 import com.example.timetable_compose_9901.main.App
 import com.example.timetable_compose_9901.timetableViewModel
 import com.example.timetable_compose_9901.view.component.Title2
-import com.example.timetable_compose_9901.viewModel.TimetableViewModel
 import org.apache.poi.hwpf.HWPFDocument
 import org.apache.poi.hwpf.extractor.WordExtractor
 import java.io.File
@@ -40,7 +39,7 @@ fun ChangeInTimetableScreen(
         color = Color.Black
     ) {
         Log.i(TAG, "ChangeInTimetableScreen: 4")
-        val text = "Если в течении 5 секунд расписание не появится, значит изменений на завтра нет. \n\nДля возвражения на главный экран нажмите кнопку назад"
+        val text = "Если в течении 5 секунд расписание не появится, значит изменений на завтра нет. \n\nДля возвращения на главный экран нажмите кнопку назад"
         val changeInTimetable = timetableViewModel.changeInTimetable.observeAsState(text)
 
         timetableViewModel.getChangeInTimetable()
