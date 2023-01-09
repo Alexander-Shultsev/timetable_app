@@ -50,6 +50,16 @@ dependencies {
     implementation 'androidx.core:core-ktx:1.7.0'
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.5.1'
 
+
+    // Net
+
+    // HtmlParser
+    implementation 'org.jsoup:jsoup:1.15.3'
+
+    // Загрузка файлов
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+
+
     // Test
     testImplementation 'junit:junit:4.13.2'
     debugImplementation "androidx.compose.ui:ui-test-manifest:$compose_version"
@@ -73,4 +83,10 @@ dependencies {
     implementation "androidx.compose.material:material:$compose_version"
     debugImplementation "androidx.compose.ui:ui-tooling:$compose_version"
     implementation 'androidx.navigation:navigation-compose:2.5.2'
+
+    // Docx/doc reader Apache POI
+    implementation group: 'org.apache.poi', name: 'poi-scratchpad', version: '3.17'
+    implementation group: 'org.apache.xmlbeans', name: 'xmlbeans', version: '3.1.0'
+    implementation 'javax.xml.stream:stax-api:1.0'
+    implementation 'com.fasterxml:aalto-xml:1.2.2'
 }

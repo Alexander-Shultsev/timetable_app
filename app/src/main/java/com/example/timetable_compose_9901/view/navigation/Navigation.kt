@@ -1,13 +1,17 @@
 package com.example.timetable_compose_9901.view.navigation
 
+import android.app.Activity
 import androidx.compose.runtime.Composable
+import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
+import androidx.navigation.activity
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.timetable_compose_9901.view.screen.ChangeCourse.ChangeCourseScreen
 import com.example.timetable_compose_9901.view.screen.ChangeGroup.ChangeGroupScreen
+import com.example.timetable_compose_9901.view.screen.ChangeInTimetable.ChangeInTimetableScreen
 import com.example.timetable_compose_9901.view.screen.TestScreen
 import com.example.timetable_compose_9901.view.screen.Timetable.TimetableScreen
 
@@ -20,12 +24,14 @@ sealed class NavItemMain(
     object Test: NavItemMain("Test")
     object ChangeCourse: NavItemMain("ChangeCourse")
     object ChangeGroup: NavItemMain("ChangeGroup")
+    object ChangeInTimetable: NavItemMain("ChangeInTimetable")
 }
 
 /* Контроллер навигации */
 @Composable
 fun NavHostMain(
-    startDestination: String
+    startDestination: String,
+    lifecycleOwner: LifecycleOwner
 ) {
     val navController = rememberNavController()
 
@@ -45,6 +51,9 @@ fun NavHostMain(
         composable(NavItemMain.ChangeGroup.route) {
             ChangeGroupScreen(navController)
         }
+        composable(NavItemMain.ChangeInTimetable.route) {
+            ChangeInTimetableScreen(navController)
+        }
     }
 }
 
@@ -55,7 +64,7 @@ fun navigate(
 ) {
     navController.navigate(screen) {
         launchSingleTop = true
-        popUpTo(navController.graph.startDestinationId) {
+        popUpTo(navController.graph.findStartDestination().id) {
             saveState = true
         }
         restoreState = true

@@ -10,5 +10,5 @@ val Shapes = Shapes(
     large = RoundedCornerShape(10.dp)
 )
 
-val heightBottomButton = 180.dp
-val heightBottomButtonNoActive = 140.dp
+val heightBottomButton = 160.dp
+val heightBottomButtonNoActive = 160.dp
