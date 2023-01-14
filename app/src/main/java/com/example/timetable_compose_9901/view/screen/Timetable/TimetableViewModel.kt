@@ -316,7 +316,7 @@ class TimetableViewModel : ViewModel() {
             "1 course/2912" -> g2912
             "1 course/2913" -> g2913
             "1 course/2921" -> g2921
-//            "1 course/2922" -> g2922
+            "1 course/2922" -> g2922
             "1 course/2951" -> g2951
             "1 course/2952" -> g2952
             "1 course/2953" -> g2953
@@ -330,7 +330,7 @@ class TimetableViewModel : ViewModel() {
             "1 course/2995" -> g2995
             "1 course/2996" -> g2996
 
-//            "2 course/1791" -> g1791
+            "2 course/1791" -> g1791
             "2 course/1792" -> g1792
             "2 course/1911" -> g1911
             "2 course/1912" -> g1912

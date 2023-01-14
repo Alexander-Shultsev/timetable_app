@@ -78,14 +78,14 @@ val g2921 = arrayOf(
     GroupItem("СБ", R.drawable.img_rest),
 )
 
-//val g2922 = arrayOf(
-//    GroupItem("ПН", R.drawable.c1_2921_monday),
-//    GroupItem("ВТ", R.drawable.c1_2921_tuesday),
-//    GroupItem("СР", R.drawable.c1_2921_wednesday),
-//    GroupItem("ЧТ", R.drawable.c1_2921_thursday),
-//    GroupItem("ПТ", R.drawable.c1_2921_friday),
-//    GroupItem("СБ", R.drawable.c1_2921_suturday),
-//)
+val g2922 = arrayOf(
+    GroupItem("ПН", R.drawable.c1_2921_monday),
+    GroupItem("ВТ", R.drawable.c1_2921_tuesday),
+    GroupItem("СР", R.drawable.c1_2921_wednesday),
+    GroupItem("ЧТ", R.drawable.c1_2921_thursday),
+    GroupItem("ПТ", R.drawable.c1_2921_friday),
+    GroupItem("СБ", R.drawable.img_rest),
+)
 
 val g2951 = arrayOf(
     GroupItem("ПН", R.drawable.c1_2951_monday),
@@ -141,7 +141,6 @@ val g2991 = arrayOf(
     GroupItem("СР", R.drawable.c1_2991_wednesday),
     GroupItem("ЧТ", R.drawable.c1_2991_thursday),
     GroupItem("ПТ", R.drawable.c1_2991_friday),
-    GroupItem("ПТ", R.drawable.c1_2991_friday),
     GroupItem("СБ", R.drawable.img_rest),
 )
 
@@ -167,7 +166,7 @@ val g2994 = arrayOf(
     GroupItem("СР", R.drawable.c1_2994_wednesday),
     GroupItem("ЧТ", R.drawable.c1_2994_thursday),
     GroupItem("ПТ", R.drawable.c1_2994_friday),
-    GroupItem("СБ", R.drawable.img_rest),
+    GroupItem("СБ", R.drawable.c1_2994_saturday),
 )
 val g2995 = arrayOf(
     GroupItem("ПН", R.drawable.c1_2995_monday),
@@ -189,14 +188,14 @@ val g2996 = arrayOf(
 
 
 /* 2 курс */
-//val g1791 = arrayOf(
-//    GroupItem("ПН", R.drawable.c2_1791_monday),
-//    GroupItem("ВТ", R.drawable.c2_1791_tuesday),
-//    GroupItem("СР", R.drawable.c2_1791_wednesday),
-//    GroupItem("ЧТ", R.drawable.c2_1791_thursday),
-//    GroupItem("ПТ", R.drawable.c2_1791_friday),
-//    GroupItem("СБ", R.drawable.c2_1791_suturday),
-//)
+val g1791 = arrayOf(
+    GroupItem("ПН", R.drawable.c2_1791_monday),
+    GroupItem("ВТ", R.drawable.c2_1791_tuesday),
+    GroupItem("СР", R.drawable.c2_1791_wednesday),
+    GroupItem("ЧТ", R.drawable.c2_1791_thursday),
+    GroupItem("ПТ", R.drawable.c2_1791_friday),
+    GroupItem("СБ", R.drawable.img_rest),
+)
 val g1792 = arrayOf(
     GroupItem("ПН", R.drawable.c2_1792_monday),
     GroupItem("ВТ", R.drawable.c2_1792_tuesday),
